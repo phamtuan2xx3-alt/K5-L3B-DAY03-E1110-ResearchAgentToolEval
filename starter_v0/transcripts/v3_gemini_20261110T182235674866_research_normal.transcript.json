@@ -1,0 +1,283 @@
+{
+  "transcript_id": "v3_gemini_20261110T182235674866_research_normal",
+  "version": "v3",
+  "artifact_version": "v3+pef863ffd8a87+t28f5f332d01a",
+  "prompt_hash": "ef863ffd8a87ceb208077ba4e72c79ed982b5efd7123f3e2ac635599f6dc804f",
+  "tools_hash": "28f5f332d01a328c2e4a5e892a83f700402101b7d3bf27d1f41def514ef6f245",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "scenario": "research_normal",
+  "system_prompt": "/Users/user/vinuni-codelab/day03/lab/work/K5-L3B-DAY03-E1110-ResearchAgentToolEval/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/user/vinuni-codelab/day03/lab/work/K5-L3B-DAY03-E1110-ResearchAgentToolEval/starter_v0/artifacts/tools.yaml",
+  "created_at": "2026-11-10T18:22:35",
+  "updated_at": "2026-11-10T18:23:01",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-11-10T18:22:35",
+      "user": "Tin tức AI hôm nay có gì nổi bật?",
+      "status": "answered",
+      "assistant_text": "# Tin tức AI nổi bật hôm nay\n\n## Y tế & Sức khỏe\n- **[Accurate medical advice from AI can still be dangerous](https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking)** (statnews.com): Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y tế trực tiếp, nhu cầu đánh giá hành vi và chuẩn mực an toàn dài hạn cho AI ngày càng trở nên cấp thiết.\n\n## An ninh & Xã hội\n- **[AI is making it harder to detect fake emergency calls](https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls)** (npr.org): Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật.\n\n## Tài chính & Thị trường Chip\n- **[Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?](https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257)** (theconversation.com): Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn như OpenAI hay Anthropic.\n\n## Đời sống & Góc nhìn\n- **[Banks push online banking, then blame us when we get hacked](https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007)** (usatoday.com): Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người.",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "lookup",
+              "args": {
+                "topic": "news",
+                "timeframe": "day",
+                "query": "AI"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "lookup",
+              "args": {
+                "topic": "news",
+                "timeframe": "day",
+                "query": "AI"
+              },
+              "result": {
+                "tool": "web_search",
+                "query": "AI",
+                "topic": "news",
+                "timeframe": "day",
+                "items": [
+                  {
+                    "title": "Accurate medical advice from AI can still be dangerous | STAT",
+                    "url": "https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking",
+                    "source": "statnews.com",
+                    "summary": "Some will argue that AI should be a neutral aggregator of information. But AI cannot be neutral: Every accurate answer excludes many additional facts and emphasizes some over others. Because of these choices, AI answers already influence behavior, as shown by the chickenpox party examples. [...] Artificial intelligence is delivering health guidance at an unprecedented scale. Every week, more than 300 million people ask ChatGPT health questions. Now, the federal government is moving AI deeper into medical care to communicate directly and autonomously with patients. Chris Klomp, the nominee for deputy secretary of Health and Human Services, has called AI in patient care the agency’s “holy grail” for improving the nation’s health. [...] Medical ethics pairs the duty to do no harm with beneficence, which is an affirmative obligation to do good. Safety evaluations of AI have focused mainly on the first duty by screening for responses that encourage imminent self-harm, discourage necessary care, or spread false information. Behavioral benchmarking would extend the first duty beyond imminent danger to long-term harms. It could also advance the second duty, which has received far less attention: designing AI to help people by",
+                    "score": 0.31910068
+                  },
+                  {
+                    "title": "Banks push online banking, then blame us when we get hacked | Opinion",
+                    "url": "https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007",
+                    "source": "usatoday.com",
+                    "summary": "One theory about an AI Armageddon doesn't involve robots who look like Arnold Schwarzenegger hunting us down with laser guns. AI could just take over our natural habitat, as we've done with other animals and plants, which would leave us without food and shelter.\n\nHere's a thought exercise: If AI were evaluating whether humans were worth saving for conservation purposes, would we grade out more as an invasive species or one that made important contributions to the ecosystem? [...] # Someone drained my bank account. Then the real nightmare began | Opinion\n\n## Over time, AI is going to turn our brains to mush. People won't be able to remember phone numbers, basic grammar or directions to places they've visited once or twice without consulting AI overlords.\n\nPortrait of Blake Fontenay\n\nThere's an old episode of \"The Simpsons\" where Homer, the TV show's booze-addled antihero, offers a hilarious toast: \"To alcohol! The cause of – and solution to – all of life's problems.\" [...] People – some of us, at least – are worried about AI eventually overthrowing human civilization. Even more immediately, there's widespread concern about the proliferation of data centers needed to support AI operations.\n\nYet at the same time we're collectively wringing our hands about those issues, we are meekly surrendering more and more control to machines over our everyday lives.",
+                    "score": 0.30978584
+                  },
+                  {
+                    "title": "AI is making it harder to detect fake emergency calls : NPR",
+                    "url": "https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls",
+                    "source": "npr.org",
+                    "summary": "Jaclyn Diaz\n\nIt's getting harder to detect fake emergency calls thanks to AI. The tech is being used to generate believable swatting calls to law enforcement that claim a shooting or other crime is taking place.\n\nNPR does not offer or accept money for coverage or interviews.  \n Anyone who makes such an offer or request is not an NPR employee and does not represent NPR. [...] Accessibility links\n\n Keyboard shortcuts for audio player\n\nAI is making it harder to detect fake emergency calls It's getting harder to detect fake emergency calls thanks to AI. The tech is being used to generate believable swatting calls to law enforcement that claim a shooting or other crime is taking place.\n\n### Artificial Intelligence\n\n# AI is making it harder to detect fake emergency calls\n\nJaclyn Diaz",
+                    "score": 0.25530696
+                  },
+                  {
+                    "title": "Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?",
+                    "url": "https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257",
+                    "source": "theconversation.com",
+                    "summary": "The AI sector is notorious for the amount of circular financing going on – where companies invest in their own suppliers or customers. Nvidia is a key player in this loop.\n\nInvestors are already fretting over whether the enormous amounts of money sunk into AI can ever return profits.\n\nWhile leading AI model builders Anthropic and OpenAI are moving toward public listings or fresh funding rounds, both face harsh reality checks. [...] Computer chips – specifically the chips used to produce and run artificial intelligence (AI) systems – have become a key front in the United States’ rivalry with China for geopolitical power and influence. The most powerful chips are needed for the most advanced AI, and the US has tried to maintain its edge over China by restricting access to those chips.\n\nWhile the Chinese government rejects claims of espionage, Alice Huang has reportedly been under investigation by the US for years. [...] The now multi-trillion-dollar company got its start making chips called graphic processing units (GPUs), used largely for video games. However, these chips – and their successors – turned out to be ideal for the kind of number-crunching needed for training and using AI models.\n\nOther companies such as Google and AMD have tried to make chips that can compete with Nvidia for speed and efficiency, however neither has been able to displace Nvidia from its dominance of the AI market.",
+                    "score": 0.23199724
+                  },
+                  {
+                    "title": "Wisdom in the Age of AI - First Things",
+                    "url": "https://firstthings.com/wisdom-in-the-age-of-ai",
+                    "source": "firstthings.com",
+                    "summary": "Also conspicuously absent was any serious attention to the possible spiritual warfare dimension of AI. Some prominent Christian thinkers, including Rod Dreher and Paul Kingsnorth, are genuinely concerned that AI could serve as a conduit for demonic forces. The Christian who is serious about the reality of spiritual warfare should at least consider this possibility. Not to do so is a failure of wisdom. After all, “our struggle is not against flesh and blood, but against the rulers, against the [...] Why so few theologians and a complete absence of biblical scholars, when the central theme of the conference was wisdom in the age of AI? If Scripture is our inerrant foundation for all life and practice, and Christian theologians and biblical scholars are uniquely trained to mine the sacred texts for wise insights, then shouldn’t these scholars be strongly represented? [...] rulers, against the authorities, against the powers of this dark world and against the spiritual forces of evil in the heavenly realms” (Eph. 6:12). Of course, many mainstream scholars will mock this as kooky fringe thinking, so it is to be expected that even devout Christian scholars might hesitate to voice this concern even in an informal context, much less present the idea at an academic conference. But it is just such anxious reticence that could gravely handicap the Church in our quest for",
+                    "score": 0.23155381
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "format",
+              "args": {
+                "template": "sections",
+                "headline": "Tin tức AI nổi bật hôm nay",
+                "items": [
+                  {
+                    "summary": "Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y tế trực tiếp, nhu cầu đánh giá hành vi và chuẩn mực an toàn dài hạn cho AI ngày càng trở nên cấp thiết.",
+                    "section": "Y tế & Sức khỏe",
+                    "url": "https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking",
+                    "title": "Accurate medical advice from AI can still be dangerous",
+                    "source": "statnews.com"
+                  },
+                  {
+                    "title": "AI is making it harder to detect fake emergency calls",
+                    "summary": "Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật.",
+                    "source": "npr.org",
+                    "section": "An ninh & Xã hội",
+                    "url": "https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls"
+                  },
+                  {
+                    "title": "Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?",
+                    "url": "https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257",
+                    "summary": "Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn như OpenAI hay Anthropic.",
+                    "source": "theconversation.com",
+                    "section": "Tài chính & Thị trường Chip"
+                  },
+                  {
+                    "section": "Đời sống & Góc nhìn",
+                    "summary": "Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người.",
+                    "source": "usatoday.com",
+                    "url": "https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007",
+                    "title": "Banks push online banking, then blame us when we get hacked"
+                  }
+                ]
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "format",
+              "args": {
+                "template": "sections",
+                "headline": "Tin tức AI nổi bật hôm nay",
+                "items": [
+                  {
+                    "summary": "Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y tế trực tiếp, nhu cầu đánh giá hành vi và chuẩn mực an toàn dài hạn cho AI ngày càng trở nên cấp thiết.",
+                    "section": "Y tế & Sức khỏe",
+                    "url": "https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking",
+                    "title": "Accurate medical advice from AI can still be dangerous",
+                    "source": "statnews.com"
+                  },
+                  {
+                    "title": "AI is making it harder to detect fake emergency calls",
+                    "summary": "Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật.",
+                    "source": "npr.org",
+                    "section": "An ninh & Xã hội",
+                    "url": "https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls"
+                  },
+                  {
+                    "title": "Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?",
+                    "url": "https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257",
+                    "summary": "Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn như OpenAI hay Anthropic.",
+                    "source": "theconversation.com",
+                    "section": "Tài chính & Thị trường Chip"
+                  },
+                  {
+                    "section": "Đời sống & Góc nhìn",
+                    "summary": "Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người.",
+                    "source": "usatoday.com",
+                    "url": "https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007",
+                    "title": "Banks push online banking, then blame us when we get hacked"
+                  }
+                ]
+              },
+              "result": {
+                "tool": "render_digest",
+                "template": "sections",
+                "markdown": "# Tin tức AI nổi bật hôm nay\n\n## Y tế & Sức khỏe\n- Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y ... - [statnews.com](https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking)\n\n## An ninh & Xã hội\n- Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật. - [npr.org](https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls)\n\n## Tài chính & Thị trường Chip\n- Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn nh... - [theconversation.com](https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257)\n\n## Đời sống & Góc nhìn\n- Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người. - [usatoday.com](https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007)\n",
+                "item_count": 4
+              }
+            }
+          ]
+        },
+        {
+          "round": 3,
+          "assistant_text": "# Tin tức AI nổi bật hôm nay\n\n## Y tế & Sức khỏe\n- **[Accurate medical advice from AI can still be dangerous](https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking)** (statnews.com): Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y tế trực tiếp, nhu cầu đánh giá hành vi và chuẩn mực an toàn dài hạn cho AI ngày càng trở nên cấp thiết.\n\n## An ninh & Xã hội\n- **[AI is making it harder to detect fake emergency calls](https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls)** (npr.org): Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật.\n\n## Tài chính & Thị trường Chip\n- **[Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?](https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257)** (theconversation.com): Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn như OpenAI hay Anthropic.\n\n## Đời sống & Góc nhìn\n- **[Banks push online banking, then blame us when we get hacked](https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007)** (usatoday.com): Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người.",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "lookup",
+          "args": {
+            "topic": "news",
+            "timeframe": "day",
+            "query": "AI"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Accurate medical advice from AI can still be dangerous | STAT",
+                "url": "https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking",
+                "source": "statnews.com",
+                "summary": "Some will argue that AI should be a neutral aggregator of information. But AI cannot be neutral: Every accurate answer excludes many additional facts and emphasizes some over others. Because of these choices, AI answers already influence behavior, as shown by the chickenpox party examples. [...] Artificial intelligence is delivering health guidance at an unprecedented scale. Every week, more than 300 million people ask ChatGPT health questions. Now, the federal government is moving AI deeper into medical care to communicate directly and autonomously with patients. Chris Klomp, the nominee for deputy secretary of Health and Human Services, has called AI in patient care the agency’s “holy grail” for improving the nation’s health. [...] Medical ethics pairs the duty to do no harm with beneficence, which is an affirmative obligation to do good. Safety evaluations of AI have focused mainly on the first duty by screening for responses that encourage imminent self-harm, discourage necessary care, or spread false information. Behavioral benchmarking would extend the first duty beyond imminent danger to long-term harms. It could also advance the second duty, which has received far less attention: designing AI to help people by",
+                "score": 0.31910068
+              },
+              {
+                "title": "Banks push online banking, then blame us when we get hacked | Opinion",
+                "url": "https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007",
+                "source": "usatoday.com",
+                "summary": "One theory about an AI Armageddon doesn't involve robots who look like Arnold Schwarzenegger hunting us down with laser guns. AI could just take over our natural habitat, as we've done with other animals and plants, which would leave us without food and shelter.\n\nHere's a thought exercise: If AI were evaluating whether humans were worth saving for conservation purposes, would we grade out more as an invasive species or one that made important contributions to the ecosystem? [...] # Someone drained my bank account. Then the real nightmare began | Opinion\n\n## Over time, AI is going to turn our brains to mush. People won't be able to remember phone numbers, basic grammar or directions to places they've visited once or twice without consulting AI overlords.\n\nPortrait of Blake Fontenay\n\nThere's an old episode of \"The Simpsons\" where Homer, the TV show's booze-addled antihero, offers a hilarious toast: \"To alcohol! The cause of – and solution to – all of life's problems.\" [...] People – some of us, at least – are worried about AI eventually overthrowing human civilization. Even more immediately, there's widespread concern about the proliferation of data centers needed to support AI operations.\n\nYet at the same time we're collectively wringing our hands about those issues, we are meekly surrendering more and more control to machines over our everyday lives.",
+                "score": 0.30978584
+              },
+              {
+                "title": "AI is making it harder to detect fake emergency calls : NPR",
+                "url": "https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls",
+                "source": "npr.org",
+                "summary": "Jaclyn Diaz\n\nIt's getting harder to detect fake emergency calls thanks to AI. The tech is being used to generate believable swatting calls to law enforcement that claim a shooting or other crime is taking place.\n\nNPR does not offer or accept money for coverage or interviews.  \n Anyone who makes such an offer or request is not an NPR employee and does not represent NPR. [...] Accessibility links\n\n Keyboard shortcuts for audio player\n\nAI is making it harder to detect fake emergency calls It's getting harder to detect fake emergency calls thanks to AI. The tech is being used to generate believable swatting calls to law enforcement that claim a shooting or other crime is taking place.\n\n### Artificial Intelligence\n\n# AI is making it harder to detect fake emergency calls\n\nJaclyn Diaz",
+                "score": 0.25530696
+              },
+              {
+                "title": "Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?",
+                "url": "https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257",
+                "source": "theconversation.com",
+                "summary": "The AI sector is notorious for the amount of circular financing going on – where companies invest in their own suppliers or customers. Nvidia is a key player in this loop.\n\nInvestors are already fretting over whether the enormous amounts of money sunk into AI can ever return profits.\n\nWhile leading AI model builders Anthropic and OpenAI are moving toward public listings or fresh funding rounds, both face harsh reality checks. [...] Computer chips – specifically the chips used to produce and run artificial intelligence (AI) systems – have become a key front in the United States’ rivalry with China for geopolitical power and influence. The most powerful chips are needed for the most advanced AI, and the US has tried to maintain its edge over China by restricting access to those chips.\n\nWhile the Chinese government rejects claims of espionage, Alice Huang has reportedly been under investigation by the US for years. [...] The now multi-trillion-dollar company got its start making chips called graphic processing units (GPUs), used largely for video games. However, these chips – and their successors – turned out to be ideal for the kind of number-crunching needed for training and using AI models.\n\nOther companies such as Google and AMD have tried to make chips that can compete with Nvidia for speed and efficiency, however neither has been able to displace Nvidia from its dominance of the AI market.",
+                "score": 0.23199724
+              },
+              {
+                "title": "Wisdom in the Age of AI - First Things",
+                "url": "https://firstthings.com/wisdom-in-the-age-of-ai",
+                "source": "firstthings.com",
+                "summary": "Also conspicuously absent was any serious attention to the possible spiritual warfare dimension of AI. Some prominent Christian thinkers, including Rod Dreher and Paul Kingsnorth, are genuinely concerned that AI could serve as a conduit for demonic forces. The Christian who is serious about the reality of spiritual warfare should at least consider this possibility. Not to do so is a failure of wisdom. After all, “our struggle is not against flesh and blood, but against the rulers, against the [...] Why so few theologians and a complete absence of biblical scholars, when the central theme of the conference was wisdom in the age of AI? If Scripture is our inerrant foundation for all life and practice, and Christian theologians and biblical scholars are uniquely trained to mine the sacred texts for wise insights, then shouldn’t these scholars be strongly represented? [...] rulers, against the authorities, against the powers of this dark world and against the spiritual forces of evil in the heavenly realms” (Eph. 6:12). Of course, many mainstream scholars will mock this as kooky fringe thinking, so it is to be expected that even devout Christian scholars might hesitate to voice this concern even in an informal context, much less present the idea at an academic conference. But it is just such anxious reticence that could gravely handicap the Church in our quest for",
+                "score": 0.23155381
+              }
+            ]
+          }
+        },
+        {
+          "tool": "format",
+          "args": {
+            "template": "sections",
+            "headline": "Tin tức AI nổi bật hôm nay",
+            "items": [
+              {
+                "summary": "Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y tế trực tiếp, nhu cầu đánh giá hành vi và chuẩn mực an toàn dài hạn cho AI ngày càng trở nên cấp thiết.",
+                "section": "Y tế & Sức khỏe",
+                "url": "https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking",
+                "title": "Accurate medical advice from AI can still be dangerous",
+                "source": "statnews.com"
+              },
+              {
+                "title": "AI is making it harder to detect fake emergency calls",
+                "summary": "Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật.",
+                "source": "npr.org",
+                "section": "An ninh & Xã hội",
+                "url": "https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls"
+              },
+              {
+                "title": "Why is Nvidia so powerful in the AI world, and what could Jensen Huang’s scandal really cost?",
+                "url": "https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257",
+                "summary": "Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn như OpenAI hay Anthropic.",
+                "source": "theconversation.com",
+                "section": "Tài chính & Thị trường Chip"
+              },
+              {
+                "section": "Đời sống & Góc nhìn",
+                "summary": "Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người.",
+                "source": "usatoday.com",
+                "url": "https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007",
+                "title": "Banks push online banking, then blame us when we get hacked"
+              }
+            ]
+          },
+          "result": {
+            "tool": "render_digest",
+            "template": "sections",
+            "markdown": "# Tin tức AI nổi bật hôm nay\n\n## Y tế & Sức khỏe\n- Mặc dù AI đưa ra tư vấn y tế chính xác, các chuyên gia cảnh báo nó vẫn có thể tiềm ẩn rủi ro khi ảnh hưởng đến hành vi người dùng (như qua các ví dụ về tiệc thủy đậu). Với hơn 300 triệu người hỏi ChatGPT các vấn đề sức khỏe mỗi tuần và xu hướng chính phủ đưa AI vào chăm sóc y ... - [statnews.com](https://www.statnews.com/2026/11/10/ai-health-advice-accuracy-messaging-risk-behavioral-benchmarking)\n\n## An ninh & Xã hội\n- Công nghệ trí tuệ nhân tạo đang khiến việc phát hiện các cuộc gọi khẩn cấp giả (swatting) trở nên khó khăn hơn. Kẻ xấu lợi dụng AI để tạo ra các cuộc gọi giả mạo vô cùng chân thực, báo cáo cảnh sát về các vụ xả súng hoặc tội phạm không có thật. - [npr.org](https://www.npr.org/2026/11/10/nx-s1-5971477/ai-is-making-it-harder-to-detect-fake-emergency-calls)\n\n## Tài chính & Thị trường Chip\n- Phân tích sâu về sức mạnh thống trị của Nvidia trong thế giới AI nhờ các dòng GPU tối ưu hóa cho việc huấn luyện mô hình. Bài viết cũng đề cập đến các vấn đề xoay quanh chu kỳ tài chính khép kín trong ngành AI và áp lực lợi nhuận đè nặng lên các công ty xây dựng mô hình lớn nh... - [theconversation.com](https://theconversation.com/why-is-nvidia-so-powerful-in-the-ai-world-and-what-could-jensen-huangs-scandal-really-cost-296257)\n\n## Đời sống & Góc nhìn\n- Bài bình luận thảo luận về việc con người ngày càng phụ thuộc vào ngân hàng trực tuyến và các hệ thống tự động hóa hỗ trợ bởi AI, trong khi đối mặt với rủi ro bảo mật, hack tài khoản và sự xói mòn dần các kỹ năng ghi nhớ hoặc tính toán cơ bản của con người. - [usatoday.com](https://www.usatoday.com/story/opinion/columnist/2026/11/10/ai-online-banking-vulnerable-hacking/92588938007)\n",
+            "item_count": 4
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T18:23:01"
+    }
+  ]
+}

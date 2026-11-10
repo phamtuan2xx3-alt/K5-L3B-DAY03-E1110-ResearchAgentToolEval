@@ -3,5 +3,331 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_cite_after_sources",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tạo citation markdown từ các nguồn sau: OpenAI Blog https://openai.com/blog/x và Example News https://www.example.com/ai",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "style": "markdown"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_cite",
+        "difficulty": "easy",
+        "what_it_tests": "User đã có list nguồn title+url → route tới tool cite (không lookup/fetch)."
+      }
+    },
+    {
+      "id": "G02_policy_privacy",
+      "phase": "B",
+      "suite": "group",
+      "query": "Theo policy nội bộ, API key phải lưu ở đâu?",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "policy",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_policy",
+        "difficulty": "medium",
+        "what_it_tests": "Câu hỏi policy nội bộ → policy, không dùng lookup."
+      }
+    },
+    {
+      "id": "G03_papers_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm paper trên arXiv về retrieval augmented generation",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "papers",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_papers",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu paper khoa học → papers, không lookup tin tức."
+      }
+    },
+    {
+      "id": "G04_timeline_no_at",
+      "phase": "B",
+      "suite": "group",
+      "query": "Cho mình 3 tweet gần đây của @openai",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "openai",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "arg_handle_strip_at",
+        "difficulty": "easy",
+        "what_it_tests": "Handle có @ → screenname không @ và limit=3."
+      }
+    },
+    {
+      "id": "G05_refuse_math",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tính đạo hàm của sin(x) giúp mình.",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "out_of_scope_math",
+        "difficulty": "easy",
+        "what_it_tests": "Bài toán không thuộc research → không gọi tool."
+      }
+    },
+    {
+      "id": "G06_cite_then_style",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Cite giúp mình nguồn VinUni https://vinuni.edu.vn ở dạng plain text"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "cite",
+              "args": {
+                "sources": [
+                  {
+                    "title": "VinUni",
+                    "url": "https://vinuni.edu.vn"
+                  }
+                ],
+                "style": "plain"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"markdown\": \"[1] VinUni — https://vinuni.edu.vn\", \"citation_count\": 1}"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang style markdown giúp"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "style": "markdown"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_cite_style",
+        "difficulty": "medium",
+        "what_it_tests": "Sau khi đã cite plain, user đổi style → gọi lại cite với style=markdown."
+      }
+    },
+    {
+      "id": "G07_confirm_then_send",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Gửi lên Telegram đoạn: Hello team"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "clarify",
+              "args": {
+                "question": "Bạn xác nhận gửi 'Hello team' lên Telegram chứ?",
+                "response_type": "yes_no"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"awaiting_user\": true}"
+        },
+        {
+          "role": "user",
+          "content": "Yes, gửi đi"
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "send_after_confirm",
+        "difficulty": "medium",
+        "what_it_tests": "Sau khi user xác nhận → send với confirmed=true."
+      }
+    },
+    {
+      "id": "G08_switch_fetch_to_lookup",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đọc giúp https://example.com/old"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "fetch",
+              "args": {
+                "url": "https://example.com/old"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"items\": [{\"title\": \"Old\", \"url\": \"https://example.com/old\"}]}"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, tìm tin web về VinUni tuần này giúp"
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_switch_to_lookup",
+        "difficulty": "medium",
+        "what_it_tests": "Đổi từ fetch URL sang web search tuần này → lookup với timeframe=week."
+      }
+    },
+    {
+      "id": "G09_missing_arxiv_id",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Trích text paper arXiv đó giúp mình"
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "clarify_missing_arxiv",
+        "difficulty": "easy",
+        "what_it_tests": "Thiếu arXiv id/URL → clarify text, không gọi paper_text."
+      }
+    },
+    {
+      "id": "G10_carry_limit_correction",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Lấy tweet mới của @sama"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "name": "timeline",
+              "args": {
+                "screenname": "sama",
+                "limit": 5
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": "{\"items\": []}"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 8 bài thôi"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 8
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_limit_correction",
+        "difficulty": "medium",
+        "what_it_tests": "User sửa limit → timeline giữ screenname=sama và limit=8."
+      }
+    }
+  ]
 }

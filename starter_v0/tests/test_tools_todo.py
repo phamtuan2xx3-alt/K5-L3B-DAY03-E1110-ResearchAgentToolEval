@@ -110,13 +110,31 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
 #   2. bad / missing input from the model (empty string, wrong type, out-of-enum value)
 #   3. failure path (missing key, HTTP error, timeout) -> returns error dict, does not raise
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+def test_cite_happy_path_builds_numbered_markdown() -> None:
+    cite = TOOL_FUNCTIONS["cite"]
+    result = cite(
+        sources=[
+            {"title": "OpenAI Blog", "url": "https://openai.com/blog/x"},
+            {"title": "", "url": "https://www.example.com/a"},
+        ],
+        style="markdown",
+    )
+    assert result["citation_count"] == 2
+    assert "[1] [OpenAI Blog](https://openai.com/blog/x)" in result["markdown"]
+    assert "[2] [example.com](https://www.example.com/a)" in result["markdown"]
+    assert result["citations"][0]["source"] == "openai.com"
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+def test_cite_bad_input_from_model_returns_error_dict() -> None:
+    cite = TOOL_FUNCTIONS["cite"]
+    result = cite(sources="not-a-list")  # type: ignore[arg-type]
+    assert result["error"] == "TypeError"
+    assert "list" in result["message"]
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_cite_failure_returns_error_dict_for_invalid_url() -> None:
+    cite = TOOL_FUNCTIONS["cite"]
+    result = cite(sources=[{"title": "x", "url": "ftp://bad.example"}])
+    assert result["error"] == "ValueError"
+    assert "http" in result["message"]
+    assert "markdown" not in result
