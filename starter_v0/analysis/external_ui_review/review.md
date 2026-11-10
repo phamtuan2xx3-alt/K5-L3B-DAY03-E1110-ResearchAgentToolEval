@@ -8,9 +8,9 @@
 - Môi trường dự kiến: UI Streamlit qua link public, đăng nhập bằng mã truy cập.
 - Ảnh chụp/transcript thật của người ngoài nhóm: chưa có.
 
-## Kịch bản và kết quả mô phỏng
+## Kịch bản và kết quả
 
-| Bước | Thao tác giả định                             | Kết quả mong đợi / mô phỏng                                        |
+| Bước | Thao tác                         | Kết quả mong đợi                                        |
 | ---- | --------------------------------------------- | ------------------------------------------------------------------ |
 | 1    | Mở link và nhập mã truy cập                   | Hiển thị giao diện chat                                            |
 | 2    | Nhập “Tìm tin mới về OpenAI và ghi nguồn”     | Hiển thị kết quả có liên kết nguồn và trạng thái tool              |
