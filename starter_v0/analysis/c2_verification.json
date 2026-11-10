@@ -1,0 +1,85 @@
+{
+  "checked_at": "2026-11-11T01:08:26+07:00",
+  "prompt_hash": "3ac1cc7d15073d657d72860a3706fe69383034ebfe277da0ec9aaac63fd7fcac",
+  "tools_hash": "c6a268606e07346d9a737d490d28b15b3689b06a4044af4b5c4f900da4ba74d3",
+  "tool_count": 14,
+  "schema_contract_tests_passed": 75,
+  "offline_suite": {
+    "passed": 147,
+    "skipped": 12,
+    "failed": 0
+  },
+  "send_tests": {
+    "passed": 10,
+    "non_boolean_confirmation_blocked": true,
+    "delivery_receipt_checked": true
+  },
+  "base_runs": [
+    {
+      "version": "v3-cp3",
+      "author": "team",
+      "changed_artifact": "baseline 14 tools",
+      "artifact_version": "v3-cp3+p401da314901c+tc10cc591508a",
+      "prompt_hash": "401da314901c08a553271e9877782bd846421ed6fbc100fcc4d6ecf10756fcae",
+      "tools_hash": "c10cc591508a764c6e805568e80c8dd17983e08b1d06d3b5e2002e16e7ae9116",
+      "reason": "Đo đối chứng sau khi bổ sung bốn tool CP3",
+      "hypothesis": "Đo routing và arguments trước khi hoàn thiện C2 với cùng danh sách 14 tool",
+      "metric_before": "",
+      "metric_after": "0.85",
+      "run_file": "runs/v3-cp3_B_base_gemini_20261111T010319101559.json"
+    },
+    {
+      "version": "v4",
+      "author": "team",
+      "changed_artifact": "system_prompt.md",
+      "artifact_version": "v4+p3ac1cc7d1507+tc10cc591508a",
+      "prompt_hash": "3ac1cc7d15073d657d72860a3706fe69383034ebfe277da0ec9aaac63fd7fcac",
+      "tools_hash": "c10cc591508a764c6e805568e80c8dd17983e08b1d06d3b5e2002e16e7ae9116",
+      "reason": "Bỏ ép một tool và thêm rule routing theo nguồn cùng bước phụ thuộc",
+      "hypothesis": "Routing rõ và cho phép nhiều tool sẽ giảm lỗi thiếu nguồn ở yêu cầu web và tweet",
+      "metric_before": "0.85",
+      "metric_after": "0.95",
+      "run_file": "runs/v4_B_base_gemini_20261111T010552889357.json"
+    },
+    {
+      "version": "v5",
+      "author": "team",
+      "changed_artifact": "tools.yaml",
+      "artifact_version": "v5+p3ac1cc7d1507+tc6a268606e07",
+      "prompt_hash": "3ac1cc7d15073d657d72860a3706fe69383034ebfe277da0ec9aaac63fd7fcac",
+      "tools_hash": "c6a268606e07346d9a737d490d28b15b3689b06a4044af4b5c4f900da4ba74d3",
+      "reason": "Hoàn thiện khi dùng/không dùng và quy ước arguments của toàn bộ tool",
+      "hypothesis": "Khai báo rõ mục đích và arguments sẽ giảm nhầm tool và truyền tham số sai",
+      "metric_before": "0.95",
+      "metric_after": "0.9",
+      "run_file": "runs/v5_B_base_gemini_20261111T010040350391.json"
+    }
+  ],
+  "excluded_provider_error_runs": [
+    {
+      "file": "runs/v3-cp3_B_base_gemini_20261111T005649824834.json",
+      "provider_error_cases": 7,
+      "used_for_metrics": false
+    },
+    {
+      "file": "runs/v4_B_base_gemini_20261111T005651036062.json",
+      "provider_error_cases": 16,
+      "used_for_metrics": false
+    }
+  ],
+  "group_run": {
+    "file": "runs/v5_B_group_gemini_20261111T010751051163.json",
+    "total_cases": 10,
+    "measured_cases": 10,
+    "passed_cases": 10,
+    "provider_error_cases": 0
+  },
+  "telegram_delivery": {
+    "file": "analysis/telegram_delivery.json",
+    "transcript": "transcripts/v5_gemini_20261111T011317669763.transcript.json",
+    "status": "sent",
+    "message_id": 5,
+    "chat_type": "group",
+    "private_channel_requirement_met": false
+  }
+}

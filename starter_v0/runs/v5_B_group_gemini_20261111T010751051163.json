@@ -1,0 +1,948 @@
+{
+  "run_id": "v5_B_group_gemini_20261111T010751051163",
+  "version": "v5",
+  "artifact_version": "v5+p3ac1cc7d1507+tc6a268606e07",
+  "prompt_hash": "3ac1cc7d15073d657d72860a3706fe69383034ebfe277da0ec9aaac63fd7fcac",
+  "tools_hash": "c6a268606e07346d9a737d490d28b15b3689b06a4044af4b5c4f900da4ba74d3",
+  "phase": "B",
+  "suite": "group",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "system_prompt": "/Users/macbook/desktop2/K5-L3B-DAY03-E1110-ResearchAgentToolEval/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/macbook/desktop2/K5-L3B-DAY03-E1110-ResearchAgentToolEval/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Eval nhóm gồm 10 case: 5 single turn và 5 multi turn. Kiểm tra routing tới cả 4 tool mới, quy ước arguments, sử dụng context, tránh gọi tool thừa và tôn trọng việc hủy gửi. Dữ liệu paper và URL là dữ liệu minh họa được cung cấp sẵn.",
+  "generated_at": "2026-11-11T01:07:51",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_deduplicate_collected_sources",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Đã có nguồn thì route tới deduplicate_sources để loại trùng theo URL; chấm lựa chọn tool, không yêu cầu tìm kiếm lại."
+      },
+      "input": "Loại các nguồn trùng URL trong danh sách sau, giữ bản xuất hiện đầu tiên và metadata gốc. Chỉ xử lý danh sách đã có, không tìm kiếm thêm: [{\"title\": \"Robot learning survey\", \"url\": \"https://example.org/robot-learning?utm_source=feed\"}, {\"title\": \"Robot learning survey copy\", \"url\": \"https://example.org/robot-learning\"}, {\"title\": \"Control methods\", \"url\": \"https://example.org/control\"}]",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {
+              "items": [
+                {
+                  "summary": "",
+                  "url": "https://example.org/robot-learning?utm_source=feed",
+                  "title": "Robot learning survey"
+                },
+                {
+                  "title": "Robot learning survey copy",
+                  "url": "https://example.org/robot-learning",
+                  "summary": ""
+                },
+                {
+                  "url": "https://example.org/control",
+                  "summary": "",
+                  "title": "Control methods"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate_sources",
+          "args": {
+            "items": [
+              {
+                "summary": "",
+                "url": "https://example.org/robot-learning?utm_source=feed",
+                "title": "Robot learning survey"
+              },
+              {
+                "title": "Robot learning survey copy",
+                "url": "https://example.org/robot-learning",
+                "summary": ""
+              },
+              {
+                "url": "https://example.org/control",
+                "summary": "",
+                "title": "Control methods"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate_sources",
+            "items": [
+              {
+                "summary": "",
+                "url": "https://example.org/robot-learning?utm_source=feed",
+                "title": "Robot learning survey"
+              },
+              {
+                "url": "https://example.org/control",
+                "summary": "",
+                "title": "Control methods"
+              }
+            ],
+            "original_count": 3,
+            "unique_count": 2,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_check_existing_citations",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Kiểm tra mã trích dẫn của bản nháp bằng check_citations với draft giữ nguyên; thiếu nguồn được báo trong kết quả tool."
+      },
+      "input": "Kiểm tra mã trích dẫn nào trong bản nháp chưa có nguồn tương ứng; không bổ sung hoặc tìm nguồn mới. Bản nháp: \"Phương pháp này giảm chi phí tính toán [source_a], nhưng còn giới hạn dữ liệu [source_b].\". Danh sách nguồn: [{\"id\": \"source_a\", \"url\": \"https://example.org/study-a\"}]",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {
+              "draft": "Phương pháp này giảm chi phí tính toán [source_a], nhưng còn giới hạn dữ liệu [source_b]."
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {
+              "sources": [
+                {
+                  "id": "source_a",
+                  "url": "https://example.org/study-a"
+                }
+              ],
+              "draft": "Phương pháp này giảm chi phí tính toán [source_a], nhưng còn giới hạn dữ liệu [source_b]."
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "check_citations",
+          "args": {
+            "sources": [
+              {
+                "id": "source_a",
+                "url": "https://example.org/study-a"
+              }
+            ],
+            "draft": "Phương pháp này giảm chi phí tính toán [source_a], nhưng còn giới hạn dữ liệu [source_b]."
+          },
+          "result": {
+            "tool": "check_citations",
+            "citations": [
+              "source_a",
+              "source_b"
+            ],
+            "missing_sources": [
+              "source_b"
+            ],
+            "unused_sources": [],
+            "valid": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_compare_paper_fields",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Route tới compare_papers và chỉ chọn year, method theo yêu cầu, dựa trên metadata có sẵn."
+      },
+      "input": "So sánh hai paper dưới đây, chỉ đối chiếu năm xuất bản và phương pháp; không tải hoặc tìm thêm paper: [{\"title\": \"Paper A\", \"year\": 2024, \"authors\": [\"Nguyen An\"], \"method\": \"Survey\", \"limitations\": \"Small sample\"}, {\"title\": \"Paper B\", \"year\": 2025, \"authors\": [\"Tran Binh\"], \"method\": \"Experiment\", \"limitations\": \"Single dataset\"}]",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {
+              "fields": [
+                "year",
+                "method"
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {
+              "fields": [
+                "year",
+                "method"
+              ],
+              "papers": [
+                {
+                  "limitations": "Small sample",
+                  "year": 2024,
+                  "authors": [
+                    "Nguyen An"
+                  ],
+                  "title": "Paper A",
+                  "method": "Survey"
+                },
+                {
+                  "method": "Experiment",
+                  "title": "Paper B",
+                  "limitations": "Single dataset",
+                  "year": 2025,
+                  "authors": [
+                    "Tran Binh"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "compare_papers",
+          "args": {
+            "fields": [
+              "year",
+              "method"
+            ],
+            "papers": [
+              {
+                "limitations": "Small sample",
+                "year": 2024,
+                "authors": [
+                  "Nguyen An"
+                ],
+                "title": "Paper A",
+                "method": "Survey"
+              },
+              {
+                "method": "Experiment",
+                "title": "Paper B",
+                "limitations": "Single dataset",
+                "year": 2025,
+                "authors": [
+                  "Tran Binh"
+                ]
+              }
+            ]
+          },
+          "result": {
+            "tool": "compare_papers",
+            "comparison": [
+              {
+                "title": "Paper A",
+                "year": 2024,
+                "method": "Survey"
+              },
+              {
+                "title": "Paper B",
+                "year": 2025,
+                "method": "Experiment"
+              }
+            ],
+            "markdown": "| title | year | method |\n| --- | --- | --- |\n| Paper A | 2024 | Survey |\n| Paper B | 2025 | Experiment |",
+            "paper_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_rank_sources_with_explicit_filters",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Xếp hạng nguồn đã có bằng rank_sources; trích đúng chủ đề, ngày mốc, domain ưu tiên và giới hạn."
+      },
+      "input": "Xếp hạng danh sách nguồn sau theo chủ đề robotics. Dùng ngày mốc 2026-11-10, ưu tiên domain example.org, chỉ lấy 2 nguồn đầu. Không tìm kiếm web: [{\"title\": \"Robotics learning\", \"url\": \"https://example.org/robotics\", \"published_at\": \"2026-11-09\"}, {\"title\": \"Robotics control\", \"url\": \"https://other.example/control\", \"published_at\": \"2026-10-10\"}, {\"title\": \"Cooking notes\", \"url\": \"https://example.org/cooking\", \"published_at\": \"2026-11-10\"}]",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {
+              "query": "robotics",
+              "reference_date": "2026-11-10",
+              "preferred_domains": [
+                "example.org"
+              ],
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {
+              "query": "robotics",
+              "reference_date": "2026-11-10",
+              "items": [
+                {
+                  "title": "Robotics learning",
+                  "published_at": "2026-11-09",
+                  "url": "https://example.org/robotics"
+                },
+                {
+                  "title": "Robotics control",
+                  "published_at": "2026-10-10",
+                  "url": "https://other.example/control"
+                },
+                {
+                  "title": "Cooking notes",
+                  "published_at": "2026-11-10",
+                  "url": "https://example.org/cooking"
+                }
+              ],
+              "limit": 2,
+              "preferred_domains": [
+                "example.org"
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "rank_sources",
+          "args": {
+            "query": "robotics",
+            "reference_date": "2026-11-10",
+            "items": [
+              {
+                "title": "Robotics learning",
+                "published_at": "2026-11-09",
+                "url": "https://example.org/robotics"
+              },
+              {
+                "title": "Robotics control",
+                "published_at": "2026-10-10",
+                "url": "https://other.example/control"
+              },
+              {
+                "title": "Cooking notes",
+                "published_at": "2026-11-10",
+                "url": "https://example.org/cooking"
+              }
+            ],
+            "limit": 2,
+            "preferred_domains": [
+              "example.org"
+            ]
+          },
+          "result": {
+            "tool": "rank_sources",
+            "items": [
+              {
+                "title": "Robotics learning",
+                "published_at": "2026-11-09",
+                "url": "https://example.org/robotics",
+                "ranking": {
+                  "score": 0.991935,
+                  "relevance": 1.0,
+                  "freshness": 0.967742,
+                  "preferred_domain": true
+                }
+              },
+              {
+                "title": "Robotics control",
+                "published_at": "2026-10-10",
+                "url": "https://other.example/control",
+                "ranking": {
+                  "score": 0.722951,
+                  "relevance": 1.0,
+                  "freshness": 0.491803,
+                  "preferred_domain": false
+                }
+              }
+            ],
+            "total_count": 3,
+            "reference_date": "2026-11-10"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_explain_ranking_without_execution",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Câu hỏi giải thích nguyên tắc không cần gọi rank_sources hay tool tìm kiếm."
+      },
+      "input": "Giải thích ngắn gọn vì sao khi xếp hạng tài liệu nghiên cứu nên cân nhắc cả mức liên quan và độ mới. Tôi chỉ hỏi khái niệm, không yêu cầu xử lý danh sách hay tra cứu web.",
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Khi xếp hạng tài liệu nghiên cứu, việc cân nhắc cả **mức độ liên quan** và **độ mới** là rất quan trọng vì hai yếu tố này bổ sung cho nhau để đảm bảo chất lượng và tính thời\n sự của kết quả tìm kiếm:\n\n1. **Mức độ liên quan (Relevance):** Đảm bảo tài liệu tìm được thực sự bám sát chủ đề, chứa đựng thông tin cốt lõi, chuyên môn và đúng trọng tâm mà người nghiên cứu đang tìm kiếm, giúp tránh tình trạng lạc đề hoặc thiếu thông tin nền tảng.\n2. **Độ mới (Recency/Timeliness):** Giúp tiếp cận những tiến bộ khoa học, phương pháp mới nhất hoặc dữ liệu cập nhật gần đây nhất trong lĩnh vực đó, tránh việc sử dụng các tri thức đã lỗi thời hoặc bị thay thế bởi các nghiên cứu đột phá sau này.\n\nSự kết hợp này giúp nhà nghiên cứu vừa nắm bắt được bức tranh tổng quan, gốc rễ của vấn đề, vừa không bỏ lỡ các xu hướng và phát hiện mới nhất.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G06_deduplicate_after_user_supplies_items",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Sau khi người dùng cung cấp danh sách còn thiếu, thực hiện deduplicate_sources thay vì hỏi lại hoặc tự tìm nguồn."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Giúp tôi loại nguồn trùng trong danh sách nghiên cứu."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn gửi danh sách nguồn có URL cần loại trùng nhé."
+        },
+        {
+          "role": "user",
+          "content": "Đây là danh sách, hãy loại trùng và giữ bản đầu tiên: [{\"title\": \"Robot learning survey\", \"url\": \"https://example.org/robot-learning?utm_source=feed\"}, {\"title\": \"Robot learning survey copy\", \"url\": \"https://example.org/robot-learning\"}, {\"title\": \"Control methods\", \"url\": \"https://example.org/control\"}]"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {
+              "items": [
+                {
+                  "summary": "",
+                  "url": "https://example.org/robot-learning?utm_source=feed",
+                  "title": "Robot learning survey"
+                },
+                {
+                  "title": "Robot learning survey copy",
+                  "url": "https://example.org/robot-learning",
+                  "summary": ""
+                },
+                {
+                  "title": "Control methods",
+                  "summary": "",
+                  "url": "https://example.org/control"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate_sources",
+          "args": {
+            "items": [
+              {
+                "summary": "",
+                "url": "https://example.org/robot-learning?utm_source=feed",
+                "title": "Robot learning survey"
+              },
+              {
+                "title": "Robot learning survey copy",
+                "url": "https://example.org/robot-learning",
+                "summary": ""
+              },
+              {
+                "title": "Control methods",
+                "summary": "",
+                "url": "https://example.org/control"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate_sources",
+            "items": [
+              {
+                "summary": "",
+                "url": "https://example.org/robot-learning?utm_source=feed",
+                "title": "Robot learning survey"
+              },
+              {
+                "title": "Control methods",
+                "summary": "",
+                "url": "https://example.org/control"
+              }
+            ],
+            "original_count": 3,
+            "unique_count": 2,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_check_revised_draft_in_context",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Dùng bản nháp mới nhất khi kiểm tra citation, không tiếp tục kiểm tra bản nháp cũ trong context."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi chuẩn bị kiểm tra trích dẫn. Bản nháp cũ là \"Kết luận [source_a].\"; danh sách nguồn: [{\"id\": \"source_a\", \"url\": \"https://example.org/study-a\"}, {\"id\": \"source_b\", \"url\": \"https://example.org/study-b\"}]"
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi đã nhận bản nháp và danh sách nguồn."
+        },
+        {
+          "role": "user",
+          "content": "Tôi thay bản nháp bằng đúng câu \"Kết luận [source_b].\" Hãy kiểm tra trích dẫn của bản mới với danh sách nguồn đã cung cấp, không tra cứu thêm."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {
+              "draft": "Kết luận [source_b]."
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {
+              "draft": "Kết luận [source_b].",
+              "sources": [
+                {
+                  "url": "https://example.org/study-a",
+                  "id": "source_a"
+                },
+                {
+                  "url": "https://example.org/study-b",
+                  "id": "source_b"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "check_citations",
+          "args": {
+            "draft": "Kết luận [source_b].",
+            "sources": [
+              {
+                "url": "https://example.org/study-a",
+                "id": "source_a"
+              },
+              {
+                "url": "https://example.org/study-b",
+                "id": "source_b"
+              }
+            ]
+          },
+          "result": {
+            "tool": "check_citations",
+            "citations": [
+              "source_b"
+            ],
+            "missing_sources": [],
+            "unused_sources": [
+              "source_a"
+            ],
+            "valid": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_compare_with_revised_columns",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Kế thừa metadata hai paper nhưng thay cột so sánh theo yêu cầu cuối, không dùng lại year/authors."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi muốn so sánh năm và tác giả của hai paper này: [{\"title\": \"Paper A\", \"year\": 2024, \"authors\": [\"Nguyen An\"], \"method\": \"Survey\", \"limitations\": \"Small sample\"}, {\"title\": \"Paper B\", \"year\": 2025, \"authors\": [\"Tran Binh\"], \"method\": \"Experiment\", \"limitations\": \"Single dataset\"}]"
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi đã nhận metadata hai paper để so sánh năm và tác giả."
+        },
+        {
+          "role": "user",
+          "content": "Đổi yêu cầu: chỉ so sánh phương pháp và hạn chế của hai paper trên. Dùng dữ liệu đã cung cấp, không tìm thêm."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {
+              "fields": [
+                "method",
+                "limitations"
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {
+              "papers": [
+                {
+                  "method": "Survey",
+                  "limitations": "Small sample",
+                  "year": 2024,
+                  "authors": [
+                    "Nguyen An"
+                  ],
+                  "title": "Paper A"
+                },
+                {
+                  "title": "Paper B",
+                  "method": "Experiment",
+                  "authors": [
+                    "Tran Binh"
+                  ],
+                  "limitations": "Single dataset",
+                  "year": 2025
+                }
+              ],
+              "fields": [
+                "method",
+                "limitations"
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "compare_papers",
+          "args": {
+            "papers": [
+              {
+                "method": "Survey",
+                "limitations": "Small sample",
+                "year": 2024,
+                "authors": [
+                  "Nguyen An"
+                ],
+                "title": "Paper A"
+              },
+              {
+                "title": "Paper B",
+                "method": "Experiment",
+                "authors": [
+                  "Tran Binh"
+                ],
+                "limitations": "Single dataset",
+                "year": 2025
+              }
+            ],
+            "fields": [
+              "method",
+              "limitations"
+            ]
+          },
+          "result": {
+            "tool": "compare_papers",
+            "comparison": [
+              {
+                "title": "Paper A",
+                "method": "Survey",
+                "limitations": "Small sample"
+              },
+              {
+                "title": "Paper B",
+                "method": "Experiment",
+                "limitations": "Single dataset"
+              }
+            ],
+            "markdown": "| title | method | limitations |\n| --- | --- | --- |\n| Paper A | Survey | Small sample |\n| Paper B | Experiment | Single dataset |",
+            "paper_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_rank_with_updated_preferences",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Kế thừa danh sách và ngày mốc; cập nhật chủ đề, domain và limit theo lượt mới nhất."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Chuẩn bị xếp hạng danh sách này theo chủ đề robotics, ưu tiên old.example, lấy 2 nguồn, ngày mốc 2026-11-10: [{\"title\": \"Climate adaptation\", \"url\": \"https://example.org/climate\", \"published_at\": \"2026-11-08\"}, {\"title\": \"Robotics survey\", \"url\": \"https://old.example/robotics\", \"published_at\": \"2026-11-09\"}]"
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi đã nhận danh sách và tiêu chí xếp hạng."
+        },
+        {
+          "role": "user",
+          "content": "Bây giờ xếp hạng danh sách đó theo chủ đề climate, thay domain ưu tiên bằng example.org và chỉ lấy 1 nguồn. Giữ nguyên ngày mốc, không tra cứu web."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {
+              "query": "climate",
+              "reference_date": "2026-11-10",
+              "preferred_domains": [
+                "example.org"
+              ],
+              "limit": 1
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {
+              "query": "climate",
+              "items": [
+                {
+                  "published_at": "2026-11-08",
+                  "url": "https://example.org/climate",
+                  "title": "Climate adaptation",
+                  "summary": ""
+                },
+                {
+                  "published_at": "2026-11-09",
+                  "summary": "",
+                  "url": "https://old.example/robotics",
+                  "title": "Robotics survey"
+                }
+              ],
+              "limit": 1,
+              "preferred_domains": [
+                "example.org"
+              ],
+              "reference_date": "2026-11-10"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "rank_sources",
+          "args": {
+            "query": "climate",
+            "items": [
+              {
+                "published_at": "2026-11-08",
+                "url": "https://example.org/climate",
+                "title": "Climate adaptation",
+                "summary": ""
+              },
+              {
+                "published_at": "2026-11-09",
+                "summary": "",
+                "url": "https://old.example/robotics",
+                "title": "Robotics survey"
+              }
+            ],
+            "limit": 1,
+            "preferred_domains": [
+              "example.org"
+            ],
+            "reference_date": "2026-11-10"
+          },
+          "result": {
+            "tool": "rank_sources",
+            "items": [
+              {
+                "published_at": "2026-11-08",
+                "url": "https://example.org/climate",
+                "title": "Climate adaptation",
+                "summary": "",
+                "ranking": {
+                  "score": 0.984375,
+                  "relevance": 1.0,
+                  "freshness": 0.9375,
+                  "preferred_domain": true
+                }
+              }
+            ],
+            "total_count": 2,
+            "reference_date": "2026-11-10"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_cancel_telegram_delivery",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Người dùng từ chối ở bước xác nhận thì không gọi send hoặc tool khác; chỉ xác nhận đã hủy."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi muốn gửi lên Telegram nội dung: \"Bản tin thử nghiệm: nhóm đã hoàn tất thu thập nguồn.\""
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có xác nhận gửi nguyên văn \"Bản tin thử nghiệm: nhóm đã hoàn tất thu thập nguồn.\" lên Telegram không?"
+        },
+        {
+          "role": "user",
+          "content": "Không, hủy gửi. Chỉ trả lời xác nhận đã hủy, không thực hiện thêm hành động nào."
+        }
+      ],
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Đã hủy gửi. Nội dung sẽ không được gửi lên Telegram.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    }
+  ]
+}

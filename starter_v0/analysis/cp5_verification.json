@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-11-11T00:14:15+07:00",
+  "http_checks": {
+    "local": {
+      "status": 200,
+      "url": "http://127.0.0.1:8501/"
+    },
+    "public": {
+      "status": 200,
+      "url": "https://personnel-mapping-took-nova.trycloudflare.com/"
+    },
+    "public_health": {
+      "status": 200,
+      "url": "https://personnel-mapping-took-nova.trycloudflare.com/_stcore/health",
+      "body": "ok"
+    }
+  },
+  "ui_live_test": {
+    "transcript": "transcripts/ui_v3_gemini_20261111T001107859594_68dcd91e.transcript.json",
+    "status": "answered",
+    "tools": [
+      "deduplicate_sources"
+    ],
+    "unique_count": 1,
+    "chat_messages": 2
+  },
+  "cli_demo": {
+    "transcript": "transcripts/v3_gemini_20261111T000642591554.transcript.json",
+    "turns": 5,
+    "statuses": [
+      "answered",
+      "answered",
+      "answered",
+      "answered",
+      "answered"
+    ],
+    "send_calls": 0
+  },
+  "offline_suite": {
+    "passed": 137,
+    "skipped": 14,
+    "failed": 0,
+    "command": ".venv/bin/python -m pytest",
+    "new_ui_session_tests": 9
+  },
+  "manual_browser_qa": {
+    "completed": false,
+    "reason": "Computer Use access to Chrome was not approved"
+  },
+  "public_link_type": "temporary Cloudflare Quick Tunnel",
+  "last_http_verified_at": "2026-11-11T00:18:40+07:00"
+}

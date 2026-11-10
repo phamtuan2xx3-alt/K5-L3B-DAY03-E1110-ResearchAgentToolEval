@@ -1,7 +1,278 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Eval nhóm gồm 10 case: 5 single turn và 5 multi turn. Kiểm tra routing tới cả 4 tool mới, quy ước arguments, sử dụng context, tránh gọi tool thừa và tôn trọng việc hủy gửi. Dữ liệu paper và URL là dữ liệu minh họa được cung cấp sẵn.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_deduplicate_collected_sources",
+      "phase": "B",
+      "suite": "group",
+      "query": "Loại các nguồn trùng URL trong danh sách sau, giữ bản xuất hiện đầu tiên và metadata gốc. Chỉ xử lý danh sách đã có, không tìm kiếm thêm: [{\"title\": \"Robot learning survey\", \"url\": \"https://example.org/robot-learning?utm_source=feed\"}, {\"title\": \"Robot learning survey copy\", \"url\": \"https://example.org/robot-learning\"}, {\"title\": \"Control methods\", \"url\": \"https://example.org/control\"}]",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Đã có nguồn thì route tới deduplicate_sources để loại trùng theo URL; chấm lựa chọn tool, không yêu cầu tìm kiếm lại."
+      }
+    },
+    {
+      "id": "G02_check_existing_citations",
+      "phase": "B",
+      "suite": "group",
+      "query": "Kiểm tra mã trích dẫn nào trong bản nháp chưa có nguồn tương ứng; không bổ sung hoặc tìm nguồn mới. Bản nháp: \"Phương pháp này giảm chi phí tính toán [source_a], nhưng còn giới hạn dữ liệu [source_b].\". Danh sách nguồn: [{\"id\": \"source_a\", \"url\": \"https://example.org/study-a\"}]",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {
+              "draft": "Phương pháp này giảm chi phí tính toán [source_a], nhưng còn giới hạn dữ liệu [source_b]."
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Kiểm tra mã trích dẫn của bản nháp bằng check_citations với draft giữ nguyên; thiếu nguồn được báo trong kết quả tool."
+      }
+    },
+    {
+      "id": "G03_compare_paper_fields",
+      "phase": "B",
+      "suite": "group",
+      "query": "So sánh hai paper dưới đây, chỉ đối chiếu năm xuất bản và phương pháp; không tải hoặc tìm thêm paper: [{\"title\": \"Paper A\", \"year\": 2024, \"authors\": [\"Nguyen An\"], \"method\": \"Survey\", \"limitations\": \"Small sample\"}, {\"title\": \"Paper B\", \"year\": 2025, \"authors\": [\"Tran Binh\"], \"method\": \"Experiment\", \"limitations\": \"Single dataset\"}]",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {
+              "fields": [
+                "year",
+                "method"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Route tới compare_papers và chỉ chọn year, method theo yêu cầu, dựa trên metadata có sẵn."
+      }
+    },
+    {
+      "id": "G04_rank_sources_with_explicit_filters",
+      "phase": "B",
+      "suite": "group",
+      "query": "Xếp hạng danh sách nguồn sau theo chủ đề robotics. Dùng ngày mốc 2026-11-10, ưu tiên domain example.org, chỉ lấy 2 nguồn đầu. Không tìm kiếm web: [{\"title\": \"Robotics learning\", \"url\": \"https://example.org/robotics\", \"published_at\": \"2026-11-09\"}, {\"title\": \"Robotics control\", \"url\": \"https://other.example/control\", \"published_at\": \"2026-10-10\"}, {\"title\": \"Cooking notes\", \"url\": \"https://example.org/cooking\", \"published_at\": \"2026-11-10\"}]",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {
+              "query": "robotics",
+              "reference_date": "2026-11-10",
+              "preferred_domains": [
+                "example.org"
+              ],
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Xếp hạng nguồn đã có bằng rank_sources; trích đúng chủ đề, ngày mốc, domain ưu tiên và giới hạn."
+      }
+    },
+    {
+      "id": "G05_explain_ranking_without_execution",
+      "phase": "B",
+      "suite": "group",
+      "query": "Giải thích ngắn gọn vì sao khi xếp hạng tài liệu nghiên cứu nên cân nhắc cả mức liên quan và độ mới. Tôi chỉ hỏi khái niệm, không yêu cầu xử lý danh sách hay tra cứu web.",
+      "failure_type": "unnecessary_tool",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "what_it_tests": "Câu hỏi giải thích nguyên tắc không cần gọi rank_sources hay tool tìm kiếm."
+      }
+    },
+    {
+      "id": "G06_deduplicate_after_user_supplies_items",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Giúp tôi loại nguồn trùng trong danh sách nghiên cứu."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn gửi danh sách nguồn có URL cần loại trùng nhé."
+        },
+        {
+          "role": "user",
+          "content": "Đây là danh sách, hãy loại trùng và giữ bản đầu tiên: [{\"title\": \"Robot learning survey\", \"url\": \"https://example.org/robot-learning?utm_source=feed\"}, {\"title\": \"Robot learning survey copy\", \"url\": \"https://example.org/robot-learning\"}, {\"title\": \"Control methods\", \"url\": \"https://example.org/control\"}]"
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Sau khi người dùng cung cấp danh sách còn thiếu, thực hiện deduplicate_sources thay vì hỏi lại hoặc tự tìm nguồn."
+      }
+    },
+    {
+      "id": "G07_check_revised_draft_in_context",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tôi chuẩn bị kiểm tra trích dẫn. Bản nháp cũ là \"Kết luận [source_a].\"; danh sách nguồn: [{\"id\": \"source_a\", \"url\": \"https://example.org/study-a\"}, {\"id\": \"source_b\", \"url\": \"https://example.org/study-b\"}]"
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi đã nhận bản nháp và danh sách nguồn."
+        },
+        {
+          "role": "user",
+          "content": "Tôi thay bản nháp bằng đúng câu \"Kết luận [source_b].\" Hãy kiểm tra trích dẫn của bản mới với danh sách nguồn đã cung cấp, không tra cứu thêm."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {
+              "draft": "Kết luận [source_b]."
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Dùng bản nháp mới nhất khi kiểm tra citation, không tiếp tục kiểm tra bản nháp cũ trong context."
+      }
+    },
+    {
+      "id": "G08_compare_with_revised_columns",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tôi muốn so sánh năm và tác giả của hai paper này: [{\"title\": \"Paper A\", \"year\": 2024, \"authors\": [\"Nguyen An\"], \"method\": \"Survey\", \"limitations\": \"Small sample\"}, {\"title\": \"Paper B\", \"year\": 2025, \"authors\": [\"Tran Binh\"], \"method\": \"Experiment\", \"limitations\": \"Single dataset\"}]"
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi đã nhận metadata hai paper để so sánh năm và tác giả."
+        },
+        {
+          "role": "user",
+          "content": "Đổi yêu cầu: chỉ so sánh phương pháp và hạn chế của hai paper trên. Dùng dữ liệu đã cung cấp, không tìm thêm."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {
+              "fields": [
+                "method",
+                "limitations"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Kế thừa metadata hai paper nhưng thay cột so sánh theo yêu cầu cuối, không dùng lại year/authors."
+      }
+    },
+    {
+      "id": "G09_rank_with_updated_preferences",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Chuẩn bị xếp hạng danh sách này theo chủ đề robotics, ưu tiên old.example, lấy 2 nguồn, ngày mốc 2026-11-10: [{\"title\": \"Climate adaptation\", \"url\": \"https://example.org/climate\", \"published_at\": \"2026-11-08\"}, {\"title\": \"Robotics survey\", \"url\": \"https://old.example/robotics\", \"published_at\": \"2026-11-09\"}]"
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi đã nhận danh sách và tiêu chí xếp hạng."
+        },
+        {
+          "role": "user",
+          "content": "Bây giờ xếp hạng danh sách đó theo chủ đề climate, thay domain ưu tiên bằng example.org và chỉ lấy 1 nguồn. Giữ nguyên ngày mốc, không tra cứu web."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {
+              "query": "climate",
+              "reference_date": "2026-11-10",
+              "preferred_domains": [
+                "example.org"
+              ],
+              "limit": 1
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Kế thừa danh sách và ngày mốc; cập nhật chủ đề, domain và limit theo lượt mới nhất."
+      }
+    },
+    {
+      "id": "G10_cancel_telegram_delivery",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tôi muốn gửi lên Telegram nội dung: \"Bản tin thử nghiệm: nhóm đã hoàn tất thu thập nguồn.\""
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có xác nhận gửi nguyên văn \"Bản tin thử nghiệm: nhóm đã hoàn tất thu thập nguồn.\" lên Telegram không?"
+        },
+        {
+          "role": "user",
+          "content": "Không, hủy gửi. Chỉ trả lời xác nhận đã hủy, không thực hiện thêm hành động nào."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "what_it_tests": "Người dùng từ chối ở bước xác nhận thì không gọi send hoặc tool khác; chỉ xác nhận đã hủy."
+      }
+    }
+  ]
 }

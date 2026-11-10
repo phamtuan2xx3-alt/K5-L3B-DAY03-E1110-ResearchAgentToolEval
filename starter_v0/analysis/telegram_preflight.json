@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-11-11T01:16:10+07:00",
+  "bot_username": "AI20k_03793_bot",
+  "bot_token_valid": true,
+  "configured_chat_id": -5534876729,
+  "configured_chat_title": "Test_AILabDay3",
+  "configured_chat_type": "group",
+  "configured_chat_is_bot_itself": false,
+  "bot_role": "administrator",
+  "private": true,
+  "ready_to_send": true,
+  "user_approved_exact_text_and_destination": true,
+  "actual_send_attempted": true,
+  "status": "sent",
+  "message_id": 5,
+  "private_channel_requirement_met": false
+}

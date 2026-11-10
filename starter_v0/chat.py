@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from env_loader import load_lab_env
+from privacy import redact_secrets
 from providers import make_provider
 from providers.base import ToolCall
 from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
@@ -53,7 +54,7 @@ def execute_tool_call(call: ToolCall) -> dict[str, Any]:
         result = func(**call.args)
     except Exception as exc:
         result = {"error": type(exc).__name__, "message": str(exc)}
-    return {"tool": call.name, "args": call.args, "result": result}
+    return redact_secrets({"tool": call.name, "args": call.args, "result": result})
 
 
 def tool_results_message(events: list[dict[str, Any]]) -> dict[str, str]:
@@ -84,13 +85,26 @@ def run_model_tool_loop(
     tools: list[dict[str, Any]],
     model: str | None,
     max_tool_rounds: int,
+    allowed_tools: set[str] | None = None,
 ) -> dict[str, Any]:
     working_messages = list(messages)
     rounds: list[dict[str, Any]] = []
     all_tool_events: list[dict[str, Any]] = []
 
     for round_index in range(1, max_tool_rounds + 1):
-        response = provider.complete(working_messages, tools, model=model, temperature=0.0)
+        try:
+            response = provider.complete(working_messages, tools, model=model, temperature=0.0)
+        except Exception as exc:
+            error = redact_secrets(f"{type(exc).__name__}: {exc}")
+            rounds.append({
+                "round": round_index, "status": "provider_error", "error": error,
+                "assistant_text": None, "tool_calls": [], "tool_results": [],
+            })
+            return {
+                "status": "provider_error", "error": error,
+                "assistant_text": "Chưa thể xử lý yêu cầu lúc này. Bạn hãy thử lại sau.",
+                "rounds": rounds, "tool_events": all_tool_events,
+            }
         calls = response.tool_calls
         round_record: dict[str, Any] = {
             "round": round_index,
@@ -112,8 +126,13 @@ def run_model_tool_loop(
         non_clarification_events: list[dict[str, Any]] = []
 
         for call in calls:
-            print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
-            event = execute_tool_call(call)
+            print(f"🔧 {call.name}({json.dumps(redact_secrets(call.args), ensure_ascii=False, sort_keys=True)})")
+            if allowed_tools is not None and call.name not in allowed_tools:
+                event = {"tool": call.name, "args": call.args, "result": {
+                    "error": "tool_not_allowed", "message": "Tool unavailable in this interface.",
+                }}
+            else:
+                event = execute_tool_call(call)
             round_record["tool_results"].append(event)
             all_tool_events.append(event)
 
@@ -146,7 +165,7 @@ def run_model_tool_loop(
 def write_transcript(path: Path, transcript: dict[str, Any]) -> None:
     transcript["updated_at"] = now_iso()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(transcript, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    path.write_text(json.dumps(redact_secrets(transcript), ensure_ascii=False, indent=2, default=str), encoding="utf-8")
 
 
 def main() -> None:
@@ -234,8 +253,9 @@ def main() -> None:
             turn_record.update(result)
             assistant_text = result["assistant_text"]
             print(f"\nAgent> {assistant_text}")
-            history.append({"role": "user", "content": user_text})
-            history.append({"role": "assistant", "content": assistant_text})
+            if result["status"] != "provider_error":
+                history.append({"role": "user", "content": user_text})
+                history.append({"role": "assistant", "content": assistant_text})
         except Exception as exc:
             turn_record.update({
                 "status": "provider_error",
