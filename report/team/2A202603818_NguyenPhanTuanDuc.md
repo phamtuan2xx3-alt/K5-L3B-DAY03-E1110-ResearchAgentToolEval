@@ -12,7 +12,6 @@ Phân công cập nhật theo TEAM.md cho bản main hiện tại:
 
 - Rà soát UI Streamlit, hướng dẫn truy cập và transcript CLI/UI.
 - Kiểm tra flow duyệt Telegram, receipt và chống gửi khi chưa xác nhận.
-- Rà soát tài liệu dùng thử ngoài nhóm; giữ nhãn MOCK đến khi có phiên thật.
 
 Đầu ra: Hướng dẫn demo, transcript và receipt Telegram. Người kiểm tra chéo: Thanh. Đây là trách nhiệm được giao, không phải xác nhận các đầu việc đã hoàn tất.
 
