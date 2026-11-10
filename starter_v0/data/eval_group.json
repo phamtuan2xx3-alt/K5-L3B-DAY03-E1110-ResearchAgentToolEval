@@ -1,7 +1,255 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Eval nhóm tự viết cho routing, arguments, boundary và multi-turn context.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_deduplicate_research_sources",
+      "phase": "B",
+      "query": "Loại bỏ các nguồn trùng lặp trong danh sách kết quả nghiên cứu này rồi trình bày lại.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_dedupe",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Yêu cầu loại bỏ nguồn trùng trong item đã có phải route tới source_dedupe, không gọi lookup."
+      }
+    },
+    {
+      "id": "G02_top_social_search",
+      "phase": "B",
+      "query": "Tìm 8 bài đăng phổ biến nhất về AI agents trên Twitter.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI agents",
+              "search_type": "Top",
+              "limit": 8
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Trích đúng chủ đề, search_type=Top và limit=8."
+      }
+    },
+    {
+      "id": "G03_fetch_explicit_url",
+      "phase": "B",
+      "query": "Đọc và tóm tắt https://example.com/research-agent.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-agent"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "URL cụ thể phải dùng fetch, không dùng lookup."
+      }
+    },
+    {
+      "id": "G04_missing_social_account",
+      "phase": "B",
+      "query": "Lấy 3 bài đăng mới nhất của tài khoản đó.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Không có tên hoặc handle tài khoản thì phải hỏi lại, không được đoán."
+      }
+    },
+    {
+      "id": "G05_send_requires_confirmation",
+      "phase": "B",
+      "query": "Gửi bản digest này lên Telegram giúp mình.",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Yêu cầu gửi phải xin xác nhận yes/no trước, không gọi send ngay."
+      }
+    },
+    {
+      "id": "G06_multiturn_news_topic",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm tin AI hôm nay."
+        },
+        {
+          "role": "user",
+          "content": "Đổi chủ đề sang robotics, vẫn chỉ lấy tin hôm nay."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn phải thay query nhưng giữ topic=news và timeframe=day."
+      }
+    },
+    {
+      "id": "G07_multiturn_account_and_limit",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Lấy 4 tweet mới nhất."
+        },
+        {
+          "role": "user",
+          "content": "Của Sam Altman."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Carry limit=4 và map Sam Altman thành handle sama."
+      }
+    },
+    {
+      "id": "G08_multiturn_url_clarification",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài nghiên cứu này."
+        },
+        {
+          "role": "user",
+          "content": "Đây là link: https://example.com/paper."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/paper"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Sau khi user bổ sung URL ở lượt sau, route tới fetch và không tự dùng URL giả."
+      }
+    },
+    {
+      "id": "G09_multiturn_top_search",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm bài đăng về OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy các bài phổ biến nhất, tối đa 6 bài."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top",
+              "limit": 6
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Carry query từ lượt trước và cập nhật search_type=Top, limit=6."
+      }
+    },
+    {
+      "id": "G10_multiturn_send_confirmation",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đăng digest tin AI lên Telegram."
+        },
+        {
+          "role": "user",
+          "content": "Có, tôi xác nhận đăng."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Sau khi có xác nhận rõ ràng ở lượt sau, agent mới được gọi send với confirmed=true."
+      }
+    }
+  ]
 }

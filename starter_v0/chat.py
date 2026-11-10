@@ -3,9 +3,10 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from env_loader import load_lab_env
 from providers import make_provider
@@ -17,6 +18,9 @@ from versioning import artifact_version_dict, build_artifact_version
 ROOT = Path(__file__).parent
 ARTIFACTS_DIR = ROOT / "artifacts"
 load_lab_env(ROOT)
+
+ProgressPhase = Literal["model_started", "tool_started", "tool_finished"]
+ProgressCallback = Callable[[ProgressPhase, int, dict[str, Any] | None], None]
 
 
 def now_iso() -> str:
@@ -84,12 +88,16 @@ def run_model_tool_loop(
     tools: list[dict[str, Any]],
     model: str | None,
     max_tool_rounds: int,
+    on_progress: ProgressCallback | None = None,
 ) -> dict[str, Any]:
+    """Run the shared chat loop, reporting progress before each blocking call."""
     working_messages = list(messages)
     rounds: list[dict[str, Any]] = []
     all_tool_events: list[dict[str, Any]] = []
 
     for round_index in range(1, max_tool_rounds + 1):
+        if on_progress is not None:
+            on_progress("model_started", round_index, None)
         response = provider.complete(working_messages, tools, model=model, temperature=0.0)
         calls = response.tool_calls
         round_record: dict[str, Any] = {
@@ -113,9 +121,13 @@ def run_model_tool_loop(
 
         for call in calls:
             print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
+            if on_progress is not None:
+                on_progress("tool_started", round_index, {"tool": call.name, "args": call.args})
             event = execute_tool_call(call)
             round_record["tool_results"].append(event)
             all_tool_events.append(event)
+            if on_progress is not None:
+                on_progress("tool_finished", round_index, event)
 
             # Detect the clarification/pause tool by its output flag (rename-proof),
             # not by a hard-coded tool name.

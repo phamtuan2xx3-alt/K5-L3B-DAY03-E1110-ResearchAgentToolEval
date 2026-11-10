@@ -16,21 +16,21 @@
 tools:
   # ---------------- Core tools ----------------
   - name: clarify
-    description: "Gửi một câu hỏi cho người dùng."
+    description: "Bắt buộc dùng để hỏi người dùng khi thiếu thông tin bắt buộc. Dùng response_type=text để xin account/handle hoặc URL; dùng response_type=yes_no để xin xác nhận trước send. Không được đoán account, URL hoặc nội dung."
     parameters:
       type: object
       properties:
-        question: {type: string, default: "", description: "Câu hỏi"}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời"}
+        question: {type: string, default: "", description: "Câu hỏi về thông tin còn thiếu hoặc xác nhận"}
+        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "text cho account/URL; yes_no trước mọi send"}
         options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn"}
       required: [question]
 
   - name: timeline
-    description: "Lấy các bài đăng gần đây."
+    description: "Lấy bài đăng gần đây của một tài khoản cụ thể. Chỉ dùng khi đã có account trong yêu cầu hoặc context; nếu thiếu account thì phải dùng clarify. Handle không có @."
     parameters:
       type: object
       properties:
-        screenname: {type: string, default: "", description: "Tên tài khoản"}
+        screenname: {type: string, default: "", description: "Handle của account đã được nêu, không có @; không được tự chọn account"}
         limit: {type: integer, default: 5, description: "Số lượng"}
       required: [screenname]
 
@@ -45,12 +45,12 @@ tools:
       required: [query]
 
   - name: lookup
-    description: "Tra cứu thông tin trên internet."
+    description: "Tìm trên web. Dùng cho mọi yêu cầu tin tức/current events với topic=news; dùng topic=general cho nghiên cứu web khác. Không dùng khi thiếu URL cần đọc hoặc khi yêu cầu là bài đăng mạng xã hội."
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Truy vấn"}
-        topic: {type: string, enum: [general, news], default: "general", description: "Phân loại"}
+        query: {type: string, default: "", description: "Chỉ chủ đề người dùng yêu cầu, không tự thêm news/today/latest"}
+        topic: {type: string, enum: [general, news], default: "general", description: "news cho tin tức/current events; general cho web research khác"}
         timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "Khoảng thời gian"}
         max_results: {type: integer, default: 5, description: "Số kết quả"}
       required: [query]
@@ -123,3 +123,16 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  - name: source_dedupe
+    description: "Loại bỏ các nguồn trùng URL trong những item đã được tool research lấy về, giữ lại lần xuất hiện đầu tiên. Dùng trước format khi cần tránh lặp; không dùng để tìm kiếm hoặc đọc URL."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          default: []
+          description: "Danh sách item research đã có, mỗi item có thể chứa url"
+          items:
+            type: object
+      required: [items]
