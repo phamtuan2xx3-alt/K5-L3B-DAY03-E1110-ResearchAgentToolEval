@@ -62,10 +62,10 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
-| v0 | baseline |  |  |  |  |
-| v1 |  |  |  |  |  |
-| v2 |  |  |  |  |  |
-| v3 |  |  |  |  |  |
+| v0 | baseline | Prompt khởi tạo ban đầu có các chỉ dẫn xấu (đoán bừa, tự gửi tin, ép 1 tool) | 0.00 | 0.65 | `runs/v0_B_base_gemini_20261110T175315502560.json` |
+| v1 | `artifacts/system_prompt.md` | Bỏ chỉ dẫn đoán bừa, bắt buộc gọi `clarify(response_type='text')` khi thiếu handle/URL và cho phép gọi song song | 0.65 | 0.75 | `runs/v1_B_base_gemini_20261110T181300856029.json` |
+| v2 | `artifacts/system_prompt.md` | Thiết lập boundary xác nhận: bắt buộc gọi `clarify(response_type='yes_no')` trước khi thực hiện hành động gửi tin | 0.75 | 0.80 | `runs/v2_B_base_gemini_20261110T181725050339.json` |
+| v3 | `artifacts/tools.yaml` | Viết lại mô tả các tool (khi nào dùng / không dùng) và quy ước `query` chỉ chứa từ khóa thực thể cốt lõi | 0.80 | 0.95 | `runs/v3_B_base_gemini_20261110T182011558241.json` |
 
 ### B2. Failure Analysis
 
@@ -73,15 +73,26 @@ Lấy từ `results[*].result.failures` trong run JSON.
 
 | Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| R10_missing_handle | missing_info | `timeline(screenname='sama')` | Tự đoán tài khoản Sam Altman thay vì hỏi lại | Thêm quy tắc gọi `clarify(response_type='text')` khi thiếu handle |
+| R11_missing_url | missing_info | `lookup(query='...')` | Tự tìm web mò mẫm thay vì hỏi link URL | Bắt buộc gọi `clarify(response_type='text')` xin link |
+| R12_confirm_before_send | wrong_boundary | `send(confirmed=true)` | Tự ý gửi tin lên Telegram khi user chưa xác nhận | Thiết lập boundary an toàn: hỏi `clarify(response_type='yes_no')` trước |
+| R13_parallel_web_and_tweets | wrong_tool | `lookup` (chỉ 1 tool) | Bị ép chỉ gọi 1 tool trong 1 bước duy nhất | Cho phép gọi đồng thời cả `lookup` và `social_search` |
+| R03_web_news_routing | wrong_arg_value | `lookup(query='AI news today...')` | Nhồi thêm từ thừa ('news', 'today') vào query | Sửa `tools.yaml`: quy định query chỉ chứa thực thể cốt lõi |
+| M02_carryover_timeframe | wrong_arg_value | `lookup(query='robotics news today')` | Nhồi từ thừa vào query khi topic='news' đã có | Sửa `tools.yaml`: quy ước query sạch không kèm từ thời gian |
+| M06_switch_tool | wrong_arg_value | `lookup(query='OpenAI news')` | Nhồi từ 'news' vào query khi đổi nguồn tin | Sửa `tools.yaml`: giữ query là 'OpenAI' |
 
 ### B3. Team Eval Cases
 
-Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
+Liệt kê các case trong `starter_v0/data/eval_group.json` (đo tool mới `github_search` và các boundary). Run file: `runs/v3_B_group_gemini_20261110T185417522678.json`.
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
 |---|---|---|---|
-|  |  |  |  |
+| G01_github_search_routing | Tìm kiếm mã nguồn mở trên GitHub → route tới tool mới github_search với đúng query và sort=stars | `github_search(query='agentic workflow', sort='stars', limit=5)` | PASS |
+| G02_github_search_library | Tìm thư viện lập trình trên GitHub → phân biệt với tra cứu web thông thường (lookup) | `github_search(query='LlamaIndex')` | PASS |
+| G03_confirmed_send_telegram | Người dùng đã nêu rõ sự xác nhận kèm nội dung → được phép gọi send với confirmed=true | `send(confirmed=true)` | PASS |
+| M_G01_clarify_then_github | 3 turns: lượt 1 thiếu query, các lượt sau bổ sung chủ đề và limit → gọi github_search đầy đủ | `github_search(query='DeepSeek R1', sort='stars', limit=5)` | PASS |
+| M_G02_github_sort_forks | 3 turns: cập nhật tham số sort=forks và limit=10 cho tool github_search | `github_search(query='LangChain', sort='forks', limit=10)` | PASS |
+| M_G03_multiturn_send_confirm | 3 turns: nghiên cứu trước, lượt 2 hỏi xin xác nhận, lượt 3 user đã đồng ý → gọi send(confirmed=true) | `send(confirmed=true)` | PASS |
 
 ### B4. Live Chat Evidence
 
@@ -95,8 +106,8 @@ Lấy từ `starter_v0/transcripts/*.transcript.json`.
 
 | Item | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
-| Tool mới (`tools/<tên>/`) |  |  |  |
-| Unit test tool mới (≥ 3 test/tool) | `pytest` output (0 failed) |  |  |
+| Tool mới (`tools/<tên>/`) | `tools/github_search/` (`tool.py`, `TOOL.md`) | Tìm kiếm repo mã nguồn mở trên GitHub theo từ khóa, sort và limit | Xử lý lỗi trả về dict thay vì raise exception, chặn query rỗng |
+| Unit test tool mới (≥ 3 test/tool) | `tests/test_tools_todo.py` (3 passed, `pytest` 0 failed) | Happy path (mock HTTP), bad input (query rỗng, sort ngoài enum), failure path (API 403) | Bắt được lỗi falsy khi `limit=0` mà eval không thể phát hiện |
 | UI (lệnh chạy + link dùng thử) |  |  |  |
 
 Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
