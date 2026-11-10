@@ -1,0 +1,14 @@
+{
+  "kind": "offline_regression_tests",
+  "before_fix": {
+    "command": "python -m pytest tests/test_send_receipt.py -q -k literal",
+    "failed": 3,
+    "actual_problem": "confirmed=\"false\", \"true\", or 1 bypassed the old truthiness guard and invoked mocked send"
+  },
+  "after_fix": {
+    "command": "python -m pytest tests/test_send_receipt.py -q",
+    "passed": 6,
+    "failed": 0
+  },
+  "network": "mocked only; these tests did not send real messages"
+}

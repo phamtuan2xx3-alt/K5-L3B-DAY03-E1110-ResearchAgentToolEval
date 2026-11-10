@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import os
+import time
+from threading import Lock
 from typing import Any
 
 from providers.base import ModelResponse, ToolCall
@@ -69,14 +71,48 @@ def _function_call_args(call: Any) -> dict[str, Any]:
 class GeminiProvider:
     """Google Gemini API provider with normalized tool_calls output."""
 
+    # Shared by provider instances in this process, including chat and retries.
+    _request_lock = Lock()
+    _last_request_at: float | None = None
+    MIN_REQUEST_INTERVAL = 4.5  # below 15 RPM, with a small timing margin
+
     def __init__(
         self,
         *,
         api_key_env: str = "GEMINI_API_KEY",
-        default_model: str = "gemini-3.8-flash",
+        default_model: str = "gemini-3.5-flash-lite",
     ) -> None:
         self.api_key_env = api_key_env
         self.default_model = default_model
+        self.last_model: str | None = None
+
+    def _paced_generate(self, client: Any, **kwargs: Any) -> Any:
+        with GeminiProvider._request_lock:
+            previous = GeminiProvider._last_request_at
+            if previous is not None:
+                delay = self.MIN_REQUEST_INTERVAL - (time.monotonic() - previous)
+                if delay > 0:
+                    time.sleep(delay)
+            GeminiProvider._last_request_at = time.monotonic()
+            return client.models.generate_content(**kwargs)
+
+    def _generate_with_retry(self, client: Any, *, model: str, contents: Any, config: Any) -> Any:
+        self.last_model = None
+        for attempt in range(3):
+            try:
+                response = self._paced_generate(client, model=model, contents=contents, config=config)
+                self.last_model = model
+                return response
+            except Exception as exc:
+                code = getattr(exc, "code", None)
+                transport_error = isinstance(exc, (ConnectionError, TimeoutError)) or (
+                    type(exc).__name__ in {"ConnectError", "ConnectTimeout", "ReadError", "ReadTimeout", "RemoteProtocolError"}
+                    and type(exc).__module__.startswith(("httpx", "httpcore", "google.genai"))
+                )
+                if (code not in (429, 500, 502, 503, 504) and not transport_error) or attempt == 2:
+                    raise
+                print(f"Gemini {model}: {code or type(exc).__name__}; waiting 60 seconds before retry {attempt + 1}/2.", flush=True)
+                time.sleep(60)
 
     def complete(
         self,
@@ -106,7 +142,7 @@ class GeminiProvider:
             config_kwargs["tools"] = [types.Tool(function_declarations=declarations)]
 
         client = genai.Client(api_key=api_key)
-        resp = client.models.generate_content(
+        resp = self._generate_with_retry(client,
             model=model or self.default_model,
             contents=contents,
             config=types.GenerateContentConfig(**config_kwargs),

@@ -1,0 +1,242 @@
+tools:
+- name: clarify
+  description: 'Ask for missing data or approval and wait. Missing account/URL: response_type=text.
+    Unapproved send: response_type=yes_no. Do not substitute a research or send call.'
+  parameters:
+    type: object
+    properties:
+      question:
+        type: string
+        default: ''
+        description: Focused missing-data or approval question.
+      response_type:
+        type: string
+        enum:
+        - text
+        - yes_no
+        - choice
+        default: text
+        description: 'Always explicit: text for missing info; yes_no for send approval;
+          choice for options.'
+      options:
+        type: array
+        default: []
+        items:
+          type: string
+        description: Choices only for response_type=choice.
+    required:
+    - question
+- name: timeline
+  description: 'Recent posts BY one known account. Not topic search. Missing account:
+    clarify. Use actual handle without @ and explicit requested limit.'
+  parameters:
+    type: object
+    properties:
+      screenname:
+        type: string
+        default: ''
+        description: Actual account handle, no @, no display name or invented placeholder.
+      limit:
+        type: integer
+        default: 5
+        description: Requested integer count; latest correction wins; default 5.
+    required:
+    - screenname
+- name: social_search
+  description: Posts ABOUT current topic on social media. Not one account's timeline
+    or web news. Top=popular, Latest=recent.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Current topic keywords only; no added news/time words, synonyms
+          or cancelled topics.
+      search_type:
+        type: string
+        enum:
+        - Latest
+        - Top
+        default: Latest
+        description: Top for popular; Latest for recent; exact spelling.
+      limit:
+        type: integer
+        default: 5
+        description: Requested integer count; latest correction wins; default 5.
+    required:
+    - query
+- name: lookup
+  description: Search general web or news, not social posts or a supplied URL. query=topic
+    keywords only; put news in topic and time in timeframe.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Current topic keywords only; no added news/time words, synonyms
+          or cancelled topics.
+      topic:
+        type: string
+        enum:
+        - general
+        - news
+        default: general
+        description: news for news/current events; otherwise general.
+      timeframe:
+        type: string
+        enum:
+        - day
+        - week
+        - month
+        - year
+        default: week
+        description: day=today, week=this week, month=this month, year=this year;
+          retain unless changed.
+      max_results:
+        type: integer
+        default: 5
+        description: Requested integer count; default 5.
+    required:
+    - query
+- name: fetch
+  description: Read the exact provided web URL. Do not search for another URL or guess
+    a missing URL; clarify instead.
+  parameters:
+    type: object
+    properties:
+      url:
+        type: string
+        default: ''
+        description: Exact supplied URL; never invent.
+    required:
+    - url
+- name: format
+  description: Format existing source items only. Not research, metadata audit, or
+    sending.
+  parameters:
+    type: object
+    properties:
+      items:
+        type: array
+        default: []
+        description: Existing source records only; never invent.
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+            url:
+              type: string
+            source:
+              type: string
+            summary:
+              type: string
+            section:
+              type: string
+      template:
+        type: string
+        enum:
+        - brief
+        - sections
+        - bullets
+        - thread
+        - daily_ai_vn
+        default: sections
+        description: brief, sections, bullets, thread, or daily_ai_vn as requested.
+      headline:
+        type: string
+        default: ''
+        description: Optional requested headline.
+    required:
+    - items
+    - template
+- name: send
+  description: Send approved exact text to Telegram ONLY after explicit user approval,
+    confirmed=true. Before approval call clarify yes_no, never send confirmed=false.
+  parameters:
+    type: object
+    properties:
+      text:
+        type: string
+        default: ''
+        description: Exact user-approved text.
+      confirmed:
+        type: boolean
+        default: false
+        description: Boolean true only after explicit approval of exact text; otherwise
+          clarify, do not send.
+    required:
+    - text
+- name: policy
+  description: Search internal company rules. Not public news or instructions to execute.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Current topic keywords only; no added news/time words, synonyms
+          or cancelled topics.
+      policy_area:
+        type: string
+        enum:
+        - all
+        - ai_research
+        - source_citation
+        - data_privacy
+        - external_publishing
+        - tool_usage
+        default: all
+        description: Matching internal policy area; all if unspecified.
+      top_k:
+        type: integer
+        default: 3
+        description: Positive integer result count; default 3.
+    required:
+    - query
+- name: papers
+  description: Find arXiv papers by topic. Not ordinary news or full-text extraction.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Current topic keywords only; no added news/time words, synonyms
+          or cancelled topics.
+      max_results:
+        type: integer
+        default: 5
+        description: Requested integer count; default 5.
+      sort_by:
+        type: string
+        enum:
+        - relevance
+        - lastUpdatedDate
+        - submittedDate
+        default: relevance
+        description: relevance, submittedDate for newest, or lastUpdatedDate.
+    required:
+    - query
+- name: paper_text
+  description: Extract text from a known arXiv ID/URL. Not paper discovery or arbitrary
+    web URLs.
+  parameters:
+    type: object
+    properties:
+      arxiv_url:
+        type: string
+        default: ''
+        description: Known arXiv ID/URL; clarify if missing.
+      max_pages:
+        type: integer
+        default: 5
+        description: Positive integer; default 5.
+      max_chars:
+        type: integer
+        default: 8000
+        description: Positive integer; default 8000.
+    required:
+    - arxiv_url

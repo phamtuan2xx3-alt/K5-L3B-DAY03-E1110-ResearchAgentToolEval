@@ -1,0 +1,42 @@
+[
+  {
+    "version": "v3-qwen3b",
+    "run": "v3-qwen3b_B_base_ollama_20261110T193943848724.json",
+    "changed": "model/runtime; v3 prompt/tools unchanged",
+    "reason": "Qwen2.5 3B baseline; max_output_tokens=512; same v3 input artifacts as Gemini; send execution blocked only in eval",
+    "hypothesis": "Measure cloud-to-local gap with identical v3 prompt/tools",
+    "before": "Gemini v3 case_accuracy=0.90"
+  },
+  {
+    "version": "v3-llama1b",
+    "run": "v3-llama1b_B_base_ollama_20261110T193800881397.json",
+    "changed": "model/runtime; v3 prompt/tools unchanged",
+    "reason": "Llama3.2 1B baseline; max_output_tokens=512 after unbounded-generation incident; same v3 input artifacts; eval sends blocked",
+    "hypothesis": "Measure smaller-model gap with identical v3 prompt/tools",
+    "before": "Gemini v3 case_accuracy=0.90"
+  },
+  {
+    "version": "v4-local",
+    "run": "v4-local_B_base_ollama_20261110T194139636388.json",
+    "changed": "system_prompt_local only (tools unchanged from v3)",
+    "reason": "Qwen2.5 3B, cap512; prompt shortened 399 to 220 words; base20; v3 tools preserved",
+    "hypothesis": "A shorter priority-ordered prompt should reduce instruction overload in a 3B model",
+    "before": "Qwen v3 capped case_accuracy=0.65"
+  },
+  {
+    "version": "v5-local",
+    "run": "v5-local_B_base_ollama_20261110T194346480602.json",
+    "changed": "tool descriptions only; v4-local prompt unchanged",
+    "reason": "Qwen2.5 3B cap512; descriptions shortened from865 to371 words; same schemas10tools",
+    "hypothesis": "Concise tool/parameter descriptions should reduce selection noise in the small model",
+    "before": "Qwen v4-local case_accuracy=0.45"
+  },
+  {
+    "version": "v5-local-gemini",
+    "run": "v5-local-gemini_B_base_gemini_20261110T194607625892.json",
+    "changed": "cross-check same v5-local prompt/tools on cloud",
+    "reason": "Gemini 3.5 Flash Lite; v5-local artifacts unchanged; pacing4.5s; compare to Gemini v3",
+    "hypothesis": "Check whether local-oriented compression preserves cloud routing/argument performance",
+    "before": "Gemini v3 case_accuracy=0.90"
+  }
+]

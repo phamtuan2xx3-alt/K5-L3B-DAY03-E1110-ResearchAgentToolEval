@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-11-10T16:44:46.036610+00:00",
+  "kind": "live_api",
+  "query": "OpenAI",
+  "result": {
+    "tool": "search_tweets",
+    "query": "OpenAI",
+    "search_type": "Latest",
+    "items": [
+      {
+        "title": "@laizhi2001 openai加油啊👏",
+        "summary": "@laizhi2001 openai加油啊👏",
+        "url": "https://x.com/rmafr10/status/2120195851842965605",
+        "source": "@rmafr10",
+        "date": "Tue Nov 10 16:44:17 +0000 2026",
+        "metrics": {
+          "favorites": 0,
+          "retweets": 0,
+          "views": null
+        }
+      },
+      {
+        "title": "AMD IS GIVING AWAY MODEL APIs. ON ITS CHINESE SITE.",
+        "summary": "AMD IS GIVING AWAY MODEL APIs. ON ITS CHINESE SITE.\n@AMD's Radeon Cloud Token Factory hands out OpenAI-compatible keys for 15 models: DeepSeek V4.1 Flash, GLM-5.3-Flash, Qwen3.8, Gemma 4 31B. No card.\n\nWhat matters before you sign up:\n→ $0, capped by daily points. They reset at midnight Beijing, which is 11am ET. The cap isn't published; GET /v1/usage shows yours.\n→ Sign up by phone, email code or GitHub. Some new accounts get reviewed first, and I haven't confirmed a US account gets through yet.\n→ 20 calls/min per account, 8 at once per key. Popular models can show \"at capacity.\"\n→ Free trial, not for production, no resale. Prompts are reportedly kept 2 days, so send nothing sensitive.\n\nMy take: as a free fallback, a key from AMD beats a random relay. I'd send an agent's cheap subtasks to DeepSeek Flash and keep a paid key behind it.\n\n#LLM",
+        "url": "https://x.com/raw_logits/status/2120195774168334803",
+        "source": "@raw_logits",
+        "date": "Tue Nov 10 16:43:58 +0000 2026",
+        "metrics": {
+          "favorites": 0,
+          "retweets": 0,
+          "views": "2"
+        }
+      }
+    ]
+  },
+  "success": true
+}

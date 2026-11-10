@@ -1,0 +1,6 @@
+{
+  "host": "twitter-api45.p.rapidapi.com",
+  "key_present": true,
+  "status": 403,
+  "body": "{\"message\":\"You are not subscribed to this API.\"}"
+}

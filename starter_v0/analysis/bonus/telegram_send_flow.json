@@ -1,0 +1,27 @@
+{
+  "kind": "telegram_real_send_flow",
+  "approval_source": "User approved exact text/channel in chat; assistant operated the UI under that approval.",
+  "user_reply": "cứ run flow thật kèm thôi",
+  "text": "E1110 - kiểm tra quy trình duyệt bản tin.",
+  "target_chat_id": -1004338885153,
+  "receipt": {
+    "tool": "send_telegram",
+    "status": "sent",
+    "message_id": 4,
+    "chat_id": -1004338885153,
+    "date": 1794314052
+  },
+  "message_url": "https://t.me/c/4338885153/4",
+  "successful_send_receipts": 1,
+  "transcript": "transcripts/cp3_ui_4012b934c2c04647b4dae9c5956ba7a4.transcript.json",
+  "before_screenshot": "analysis/bonus/telegram-before-confirmation.png",
+  "after_screenshot": "analysis/bonus/telegram-after-send.png",
+  "flow": [
+    "clarify confirmation",
+    "explicit user approval",
+    "UI pending exact text/channel",
+    "confirmation button",
+    "send confirmed=true",
+    "Telegram sent receipt"
+  ]
+}

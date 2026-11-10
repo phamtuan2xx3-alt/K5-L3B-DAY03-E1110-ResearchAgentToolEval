@@ -1,0 +1,7 @@
+{
+  "kind": "offline_unit_tests",
+  "captured_at": "2026-11-10T19:48:09+07:00",
+  "command": "python -m pytest -q",
+  "exit_code": 0,
+  "log": "analysis/bonus/pytest-final.txt"
+}

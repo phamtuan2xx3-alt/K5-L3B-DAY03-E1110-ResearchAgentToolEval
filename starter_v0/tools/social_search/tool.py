@@ -19,6 +19,18 @@ def _twitter_get(path: str, params: dict[str, Any]) -> dict[str, Any]:
         headers={"x-rapidapi-key": key, "x-rapidapi-host": host},
         timeout=TIMEOUT,
     )
+    if response.status_code == 403:
+        try:
+            message = str(response.json().get("message", ""))
+        except (ValueError, AttributeError):
+            message = ""
+        if "not subscribed" in message.lower():
+            raise RuntimeError(
+                "RapidAPI HTTP 403: this RAPIDAPI_KEY is not subscribed to Twitter API45. "
+                "Subscribe to https://rapidapi.com/alexanderxbx/api/twitter-api45 "
+                "using the account that owns the key, then verify RAPIDAPI_KEY and "
+                "RAPIDAPI_TWITTER_HOST in .env. No social results were retrieved."
+            )
     response.raise_for_status()
     return response.json()
 

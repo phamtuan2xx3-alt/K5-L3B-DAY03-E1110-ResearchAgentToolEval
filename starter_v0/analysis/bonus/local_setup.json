@@ -1,0 +1,47 @@
+{
+  "kind": "local_setup_preflight",
+  "captured_at": "2026-11-10T19:27:09+07:00",
+  "server_version": "0.40.16",
+  "base_url": "http://127.0.0.1:11435/v1",
+  "weights_sha256_verified": true,
+  "models": [
+    {
+      "name": "llama3.2:1b",
+      "digest": "666b61f84a0bcc94fd1ec18c00265885efc32091a0fe22ea2a959fc4cddd38ab",
+      "size": 1321098329,
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "1.2B",
+        "quantization_level": "Q8_0",
+        "context_length": 131072,
+        "embedding_length": 2048,
+        "runner": "ggml"
+      }
+    },
+    {
+      "name": "qwen2.5:3b",
+      "digest": "f3c1b994a6a21d314ea6ba2ccb24c6128388e113ad16bf3083ec9dbec42be381",
+      "size": 1929912432,
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "3.1B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 32768,
+        "embedding_length": 2048,
+        "runner": "ggml"
+      }
+    }
+  ],
+  "full_bonus_completed": false,
+  "scope": "Download and runnable model preparation; not the required two-model eval plus two optimization rounds."
+}

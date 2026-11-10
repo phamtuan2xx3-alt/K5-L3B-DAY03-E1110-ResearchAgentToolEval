@@ -1,0 +1,1347 @@
+{
+  "run_id": "v3-llama1b_B_base_ollama_20261110T193800881397",
+  "version": "v3-llama1b",
+  "artifact_version": "v3-llama1b+pdab6f4673881+t27762ac95ebc",
+  "prompt_hash": "dab6f467388174d68a5a2725177e7966db2ada3d34d05bd20a56dda0dff9d6ff",
+  "tools_hash": "27762ac95ebc86b952a5bd653d1bee49dec8fa3e8d0a61fc0ac19a54b41ec1ca",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "action_execution": "blocked_in_eval",
+  "max_output_tokens": 512,
+  "model": "llama3.2:1b",
+  "model_pool": [
+    "llama3.2:1b"
+  ],
+  "model_selection": "fixed",
+  "models_used": [
+    "llama3.2:1b"
+  ],
+  "system_prompt": "artifacts\\versions\\v3\\system_prompt.md",
+  "tools": "artifacts\\versions\\v3\\tools.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day03_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T19:38:00",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 3,
+    "case_accuracy": 0.15,
+    "tool_routing_accuracy": 0.45,
+    "argument_accuracy": 0.15,
+    "multiturn_accuracy": 0.0,
+    "failure_counts": {
+      "wrong_tool": 6,
+      "wrong_arg_value": 6,
+      "missing_info": 4,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 6,
+      "missing_tool_call": 11
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "limit": 1,
+              "screenname": "SamAltman"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "screenname: expected 'sama', got 'SamAltman'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "limit": 1,
+            "screenname": "SamAltman"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=SamAltman"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2429,
+        "completion_tokens": 19,
+        "total_tokens": 2448
+      }
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "type": "function",
+              "function": "timeline",
+              "parameters": {
+                "limit": 5,
+                "screenname": "twitter"
+              }
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call social_search",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "type": "function",
+            "function": "timeline",
+            "parameters": {
+              "limit": 5,
+              "screenname": "twitter"
+            }
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "get_user_tweets() got an unexpected keyword argument 'type'"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2433,
+        "completion_tokens": 21,
+        "total_tokens": 2454
+      }
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "tin_tuc",
+              "limit": "10"
+            }
+          }
+        ],
+        "actual_text": "}\n\n{\"type\":\"function\",\"function\":{\"name\": \"social_search\", \"parameters\": {\"query\": \"tin_tuc\", \"limit\": \"10\", \"search_type\": \"Latest\"}}}\n\n{\"type\":\"function\",\"function\":{\"name\": \"lookup\", \"parameters\": {\"query\": \"tin_tuc\", \"max_results\": \"10\", \"query\": \"tin_tuc\", \"timeframe\": \"day\", \"topic\": \"news\"}}}\n\n{\"type\":\"function\",\"function\":{\"name\": \"fetch\", \"parameters\": {\"url\": \"https://www.tinutucap.com.vn/tin-tuc/ai-hom-nay-cao-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-voi-ai-va-ai-va-",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "tin_tuc",
+            "limit": "10"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=tin_tuc"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 2430,
+        "completion_tokens": 512,
+        "total_tokens": 2942
+      }
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"description\":\"Search social-media posts ABOUT a topic or public discussion. Use for keywords, trends, Top or Latest posts. Do not use for a known account's own recent posts (timeline), general web news (lookup), or reading a URL (fetch).\",\"parameters\":{\"type\":\"object\",\"required\":[\"query\"],\"properties\":{\"limit\":{\"type\":\"integer\",\"description\":\"Requested integer count, default 5; latest correction overrides earlier count.\"},\"query\":{\"type\":\"string\",\"description\":\"Only the current topic keywords or exact phrase requested by the user. Preserve spelling/case of named topics. Exclude request words such as find tweets about; do not add news, latest, today, translations, synonyms, or previous cancelled topics.\"},\"search_type\":{\"type\":\"string\",\"description\":\"Exact case-sensitive enum: Top for popular/top posts; Latest for recent/latest posts (default).\",\"enum\":[\"Latest\",\"Top\"]}}}}",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call fetch"
+        ]
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2437,
+        "completion_tokens": 194,
+        "total_tokens": 2631
+      }
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "type": "function",
+              "function": "timeline",
+              "parameters": {
+                "limit": 10,
+                "screenname": "@elonmusk"
+              }
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'elonmusk', got None",
+          "limit: expected 10, got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "type": "function",
+            "function": "timeline",
+            "parameters": {
+              "limit": 10,
+              "screenname": "@elonmusk"
+            }
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "get_user_tweets() got an unexpected keyword argument 'type'"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2429,
+        "completion_tokens": 24,
+        "total_tokens": 2453
+      }
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"type\":\"object\",\"required\":[\"query\"],\"properties\":{\"limit\":{\"type\":\"integer\",\"description\":\"Requested integer count, default 5; latest correction overrides earlier count.\"},\"query\":{\"type\":\"string\",\"description\":\"Only the current topic keywords or exact phrase requested by the user. Preserve spelling/case of named topics. Exclude request words such as find tweets about; do not add news, latest, today, translations, synonyms, or previous cancelled topics.\"},\"search_type\":{\"type\":\"string\",\"description\":\"Exact case-sensitive enum: Top for popular/top posts; Latest for recent/latest posts (default).\",\"enum\":[\"Latest\",\"Top\"]}}}}",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup"
+        ]
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2426,
+        "completion_tokens": 142,
+        "total_tokens": 2568
+      }
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "parameters": {
+                "query": "OpenAI",
+                "search_type": "Top"
+              },
+              "type": "function",
+              "function": "social_search"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "search_type: expected 'Top', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "parameters": {
+              "query": "OpenAI",
+              "search_type": "Top"
+            },
+            "type": "function",
+            "function": "social_search"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'parameters'"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2432,
+        "completion_tokens": 24,
+        "total_tokens": 2456
+      }
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Để giải bài toán tích phân của nguyên hàm của x^2, ta có thể sử dụng công thức sau:\n\n∫(x^2) dx = (1/3)x^3 + C\n\nTrong đó C là constant không thể xác định được.\n\nĐể tìm ra giá trị của C, ta sử dụng phương pháp tính trị của tích phân. Ta có:\n\n∫(x^2) dx = (1/3)x^3 + C\n\nTa biết rằng:\n\n∫(x^2) dx = (1/3)x^3 + C\n\nTa có thể so sánh hai phương trình trên để tìm ra giá trị của C:\n\n(1/3)x^3 + C = ∫(x^2) dx\n\nSử dụng công thức của tích phân, ta có:\n\n(1/3)x^3 + C = (1/3)x^3 + C\n\nTa thấy rằng hai phương trình trên đều có cùng một phần nhân x^3, nên chúng ta có thể kết luận rằng:\n\nC = C\n\nDo đó, giá trị của C là 0.\n\nVậy, nguyên hàm của x^2 là:\n\n∫(x^2) dx = (1/3)x^3 + 0",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2437,
+        "completion_tokens": 257,
+        "total_tokens": 2694
+      }
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý ảo có khả năng thực hiện các nhiệm vụ theo yêu cầu. Tôi có thể trả lời các câu hỏi, cung cấp thông tin, tạo văn bản, hoặc thực hiện các hành động cụ thể như tìm kiếm thông tin trên internet, gửi tin nhắn qua mạng xã hội, hoặc tìm kiếm các tài liệu trên internet.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2428,
+        "completion_tokens": 72,
+        "total_tokens": 2500
+      }
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "parameters": {
+                "limit": 5,
+                "screenname": "@username"
+              },
+              "type": "function",
+              "function": "timeline"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "parameters": {
+              "limit": 5,
+              "screenname": "@username"
+            },
+            "type": "function",
+            "function": "timeline"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "get_user_tweets() got an unexpected keyword argument 'parameters'"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2429,
+        "completion_tokens": 22,
+        "total_tokens": 2451
+      }
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Bài viết này mô tả các chức năng của một số công cụ trong một môi trường nghiên cứu hoặc tìm kiếm thông tin. Các chức năng được mô tả như sau:\n\n- `clarify`: Hỗ trợ việc kiểm tra thông tin trước khi thực hiện một hành động nào đó. Nó yêu cầu một câu hỏi cụ thể về thông tin cần thiết và yêu cầu người dùng cung cấp thông tin đó. Sau khi nhận được thông tin, nó yêu cầu người dùng xác nhận thông tin đó trước khi thực hiện hành động.\n\n- `timeline`: Tìm kiếm các bài đăng mới nhất từ một tài khoản cụ thể trên mạng xã hội. Nó yêu cầu một câu hỏi về tài khoản cụ thể và số lượng bài đăng cụ thể.\n\n- `social_search`: Tìm kiếm các bài đăng trên mạng xã hội về một chủ đề cụ thể. Nó yêu cầu một câu hỏi về chủ đề và số lượng bài đăng cụ thể.\n\n- `lookup`: Tìm kiếm các nguồn thông tin trên internet. Nó yêu cầu một câu hỏi về nguồn thông tin cụ thể và số lượng nguồn cụ thể.\n\n- `fetch`: Tìm kiếm các kết quả cụ thể trên internet. Nó yêu cầu một câu hỏi về kết quả cụ thể và số lượng kết quả cụ thể.\n\n- `format`: Tạo một bản báo cáo từ các nguồn thông tin đã tìm kiếm. Nó yêu cầu một câu hỏi về bản báo cáo cụ thể và số lượng bản báo cáo cụ thể.\n\n- `send`: Gửi một văn bản cụ thể đến một tài khoản cụ thể trên mạng xã hội. Nó yêu cầu một câu hỏi về văn bản cụ thể và số lượng văn bản cụ thể.\n\n- `policy`: Tìm kiếm các quy định nội bộ. Nó yêu cầu một câu hỏi về quy định cụ thể và số lượng quy định cụ thể.\n\n- `papers`: Tìm kiếm các bài báo khoa học trên arXiv. Nó yêu cầu một câu hỏi về chủ đề khoa học cụ thể và số lượng bài báo cụ thể.\n\n- `paper_text`: Tải về và in lại văn bản cụ thể từ một bài báo khoa học trên arXiv. Nó yêu cầu một câu hỏi về bài báo cụ thể và số lượng bài báo cụ thể.\n\nTóm lại, các công cụ này cung cấp các chức năng để tìm kiếm, kiểm tra, và xử lý các nguồn thông tin trên internet, bao gồm cả việc tạo ra các bản báo cáo và gửi văn bản cụ thể.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2427,
+        "completion_tokens": 497,
+        "total_tokens": 2924
+      }
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"description\":\"Search social-media posts ABOUT a topic or public discussion. Use for keywords, trends, Top or Latest posts. Do not use for a known account's own recent posts (timeline), general web news (lookup), or reading a URL (fetch).\",\"parameters\":{\"type\":\"object\",\"required\":[\"query\"],\"properties\":{\"limit\":{\"type\":\"integer\",\"description\":\"Requested integer count, default 5; latest correction overrides earlier count.\"},\"query\":{\"type\":\"string\",\"description\":\"Only the current topic keywords or exact phrase requested by the user. Preserve spelling/case of named topics. Exclude request words such as find tweets about; do not add news, latest, today, translations, synonyms, or previous cancelled topics.\"},\"search_type\":{\"type\":\"string\",\"description\":\"Exact case-sensitive enum: Top for popular/top posts; Latest for recent/latest posts (default).\",\"enum\":[\"Latest\",\"Top\"]}}}}",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2428,
+        "completion_tokens": 194,
+        "total_tokens": 2622
+      }
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "parameters": {
+                "limit": 5,
+                "query": "tin AI hôm nay",
+                "search_type": "Latest"
+              },
+              "type": "function",
+              "function": "social_search"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "type": "function",
+              "function": "social_search",
+              "parameters": {
+                "limit": 5,
+                "query": "tin AI",
+                "search_type": "Latest"
+              }
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "type": "function",
+              "function": "fetch",
+              "parameters": {
+                "url": "https://www.ai-magazine.com/2023/02/20/ai-technology-in-the-world-of-artificial-intelligence/"
+              }
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "query: expected 'AI', got None",
+          "extra tool call social_search",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "parameters": {
+              "limit": 5,
+              "query": "tin AI hôm nay",
+              "search_type": "Latest"
+            },
+            "type": "function",
+            "function": "social_search"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'parameters'"
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "type": "function",
+            "function": "social_search",
+            "parameters": {
+              "limit": 5,
+              "query": "tin AI",
+              "search_type": "Latest"
+            }
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'type'"
+          }
+        },
+        {
+          "tool": "fetch",
+          "args": {
+            "type": "function",
+            "function": "fetch",
+            "parameters": {
+              "url": "https://www.ai-magazine.com/2023/02/20/ai-technology-in-the-world-of-artificial-intelligence/"
+            }
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "read_url() got an unexpected keyword argument 'type'"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2434,
+        "completion_tokens": 106,
+        "total_tokens": 2540
+      }
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "{\n    \"name\": \"fibonacci\",\n    \"parameters\": {\n        \"type\": \"function\",\n        \"name\": \"fibonacci\",\n        \"parameters\": {\n            \"n\": \"5\"  # Tính đến số lượng 5\n        }\n    }\n}",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2431,
+        "completion_tokens": 57,
+        "total_tokens": 2488
+      }
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "@elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"Elon Musk\",query_type\":\"Latest\",limit\":5}}}\n{\"type\":\"function\",\"function\":{\"name\":\"format\",\"parameters\":{\"items\":[{\"section\":\"News\",\"source\":\"Elon Musk\",\"summary\":\"Của Elon Musk\", \"url\":\"https://www.bbc.com/news/science-50911135\",\"type\":\"object\"}],\"headline\":\"Của Elon Musk\", \"description\":\"Actual existing source items with title, summary, url, source and optional section. Do not invent source data.\",\"template\":\"brief\",\"description\":null,\"type\":\"brief\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"clarify\",\"parameters\":{\"question\":\"Giữ đúng 5 tweet, đừng đổi số lượng\",response_type\":\"text\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"parameters\":{\"url\":\"https://www.bbc.com/news/science-50911135\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"paper_text\",\"parameters\":{\"arxiv_url\":\"https://arxiv.org/abs/2001.11685\",max_chars\":8000,max_pages\":5}}}\n{\"type\":\"function\",\"function\":{\"name\":\"timeline\",\"parameters\":{\"screenname\":\"@elonmusk\",\"limit\":5}}}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"Elon Musk\",query_type\":\"Latest\",limit\":5}}}\n{\"type\":\"function\",\"function\":{\"name\":\"format\",\"parameters\":{\"items\":[{\"section\":\"News\",\"source\":\"Elon Musk\",\"summary\":\"Của Elon Musk\", \"url\":\"https://www.bbc.com/news/science-50911135\",\"type\":\"object\"}],\"headline\":\"Của Elon Musk\", \"description\":\"Actual existing source items with title, summary, url, source and optional section. Do not invent source data.\",\"template\":\"brief\",\"description\":null,\"type\":\"brief\"}}}\n{\"type\":\"function\",\"function\":\"clarify\",\"parameters\":{\"question\":\"Giữ đúng 5 tweet, đừng đổi số lượng\",response_type\":\"text\"}}",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "missing_info",
+        "failures": [
+          "screenname: expected 'elonmusk', got '@elonmusk'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "@elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=%40elonmusk"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2497,
+        "completion_tokens": 453,
+        "total_tokens": 2950
+      }
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "TinAI_hom_nay",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"robotics\", \"search_type\":\"Latest\", \"limit\":10}}}\n{\"type\":\"function\",\"function\":{\"name\":\"format\",\"parameters\":{\"items\":[{\"section\":\"Robotics\",\"source\":\"TinAI_hom_nay\"}, {\"section\":\"TinAI_hom_nay\"}, {\"section\":\"TinAI_hom_nay\"}, {\"section\":\"Robotics\"}, {\"section\":\"Robotics\"}, {\"section\":\"Robotics\"}, {\"section\":\"Robotics\"}, {\"section\":\"Robotics\"}, {\"section\":\"Robotics\"}, {\"section\":\"Robotics\"}],\"template\":\"brief\",\"description\":\"format existing source items into markdown digest.\"}}",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "TinAI_hom_nay",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=TinAI_hom_nay"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2492,
+        "completion_tokens": 172,
+        "total_tokens": 2664
+      }
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "SamAltman",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"Sam Altman\", \"limit\":3, \"search_type\":\"Latest\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"clarify\",\"parameters\":{\"question\":\"Lấy 3 tweet mới nhất\", \"response_type\":\"text\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"parameters\":{\"url\":\"https://twitter.com/SamAltman/status/1234567890\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"Sam Altman\", \"limit\":3, \"search_type\":\"Latest\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"timeline\",\"parameters\":{\"screenname\":\"AndrejKarpathy\", \"limit\":3}}}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"Andrej Karpathy\", \"limit\":3, \"search_type\":\"General\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"parameters\":{\"query\":\"Andrej Karpathy\", \"max_results\":3, \"query\":{\"type\":\"string\",\"description\":\"Minimal current topic keywords only, preserving the user's wording and named-topic casing. Do not expand or translate, add synonyms, or append news/latest/today/search instructions. Put news category in topic and time constraints in timeframe instead. A later replacement topic supersedes the old one.\"},\"topic\":\"Andrej Karpathy\", \"timeframe\":\"week\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"format\",\"parameters\":{\"items\":[{\"section\":\"Author\",\"title\":\"Sam Altman\"},{\"section\":\"Date\",\"title\":\"2021-01-01\"},{\"section\":\"Tweet\",\"title\":\"Tôi mới được bổ nhiệm làm CEO của Meta.\"}],\"headline\":\"3 tweet mới nhất của Sam Altman\", \"items\":[{\"section\":\"Source\",\"title\":\"Twitter\"}, {\"section\":\"Source\",\"title\":\"Twitter\"}, {\"section\":\"Source\",\"title\":\"Twitter\"}],\"description\":\"Actual existing source items with title, summary, url, source and optional section. Do not invent source data.\"},\"template\":\"brief\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"paper_text\",\"parameters\":{\"arxiv_url\":\"https://arxiv.org/abs/2101.00233\", \"max_chars\":10000, \"max_pages\":5}}}\n{\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"parameters\":{\"url\":\"https",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'karpathy', got 'SamAltman'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "SamAltman",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=SamAltman"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 2495,
+        "completion_tokens": 512,
+        "total_tokens": 3007
+      }
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "{\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"parameters\":{\"url\":\"https://anthropic.com/news/claude\"}}",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call fetch"
+        ]
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2492,
+        "completion_tokens": 26,
+        "total_tokens": 2518
+      }
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": null,
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "}\n{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"Elon Musk\", \"query\":null,\"limit\":10,\"search_type\":null,\"topic\":null}}}\n{\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"parameters\":{\"url\":\"https://twitter.com/elonmusk/status/1234567890\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"paper_text\",\"parameters\":{\"arxiv_url\":\"https://arxiv.org/abs/1903.04758\", \"max_chars\":null, \"max_pages\":null}}}\n{\"type\":\"function\",\"function\":{\"name\":\"format\",\"parameters\":{\"items\":[{\"section\":\"News\", \"source\":\"Twitter\", \"summary\":\"Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\", \"url\":\"https://www.twitter.com/elonmusk/status/1234567890\", \"type\":\"object\"}],\"headline\":\"Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\", \"description\":null,\"type\":\"object\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"clarify\",\"parameters\":{\"question\":\"Vẫn của Elon Musk ?\", \"options\":[\"Vẫn của Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\", \"Vẫn của Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\", \"Vẫn của Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\"], \"response_type\": \"text\"}}}}\n{\"type\":\"function\",\"function\":{\"name\":\"fetch\",\"parameters\":{\"url\":\"https://twitter.com/elonmusk/status/1234567890\"}}}\n{\"type\":\"function\",\"function\":{\"name\":\"format\",\"parameters\":{\"items\":[{\"section\":\"News\", \"source\":\"Twitter\", \"summary\":\"Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\", \"url\":\"https://www.twitter.com/elonmusk/status/1234567890\", \"type\":\"object\"}],\"headline\":\"Elon Musk mới đây đã đưa ra một số tuyên bố về việc xây dựng một nhà ga tàu tự hành\", \"description\":null,\"type\":\"object\"}}}\n{\"type",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'elonmusk', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": null,
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php"
+          }
+        }
+      ],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 2491,
+        "completion_tokens": 512,
+        "total_tokens": 3003
+      }
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "{\"type\":\"function\",\"function\":{\"name\":\"social_search\",\"parameters\":{\"query\":\"OpenAI\", \"limit\":5, \"search_type\":\"Latest\"}}",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup"
+        ]
+      },
+      "tool_results": [],
+      "model": "llama3.2:1b",
+      "requested_model": "llama3.2:1b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2498,
+        "completion_tokens": 31,
+        "total_tokens": 2529
+      }
+    }
+  ]
+}

@@ -110,13 +110,43 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
 #   2. bad / missing input from the model (empty string, wrong type, out-of-enum value)
 #   3. failure path (missing key, HTTP error, timeout) -> returns error dict, does not raise
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+def test_source_audit_happy_path_preserves_input() -> None:
+    items = [{"title": "Study", "url": "https://EXAMPLE.org:443/study#abstract", "published_at": "2026-11-10"}]
+    result = TOOL_FUNCTIONS["source_audit"](items=items)
+    assert result["status"] == "ok"
+    assert result["summary"] == {"item_count": 1, "unique_url_count": 1, "issue_count": 0, "duplicate_count": 0}
+    assert result["results"][0]["canonical_url"] == "https://example.org/study"
+    assert items[0]["url"] == "https://EXAMPLE.org:443/study#abstract"
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+@pytest.mark.parametrize("items", [None, [], "sources", {}, ["not an object"]])
+def test_source_audit_bad_input_from_model_returns_error(items) -> None:
+    result = TOOL_FUNCTIONS["source_audit"](items=items)
+    assert result["error"] in {"ValueError", "TypeError"}
+    assert result["tool"] == "source_audit"
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_source_audit_failure_returns_error_dict(monkeypatch) -> None:
+    def fail(_value):
+        raise RuntimeError("audit parser unavailable")
+    monkeypatch.setattr("tools.source_audit.tool._canonical_url", fail)
+    result = TOOL_FUNCTIONS["source_audit"](items=[{"title": "A", "url": "https://example.org/a"}])
+    assert result == {"tool": "source_audit", "error": "RuntimeError", "message": "audit parser unavailable"}
+
+
+def test_source_audit_duplicates_ignore_fragments_but_keep_query_and_path_case() -> None:
+    urls = ["https://EXAMPLE.org:443/A#one", "https://example.org/A#two", "https://example.org/a", "https://example.org/A?version=2"]
+    result = TOOL_FUNCTIONS["source_audit"](items=[{"title": "A", "url": url} for url in urls], require_date=False)
+    assert result["summary"]["unique_url_count"] == 3
+    assert result["issues"] == [{"index": 1, "code": "duplicate_url", "duplicate_of": 0}]
+
+
+def test_source_audit_flags_missing_metadata_and_bad_urls() -> None:
+    result = TOOL_FUNCTIONS["source_audit"](items=[{}, {"title": "A", "url": "javascript:alert(1)", "date": "2026-11-10"}, {"title": "B", "url": "https://example.org:bad/b", "published_date": "2026-11-10"}])
+    assert result["status"] == "needs_review"
+    assert [(x["index"], x["code"]) for x in result["issues"]] == [(0, "missing_url"), (0, "missing_title"), (0, "missing_date"), (1, "invalid_url"), (2, "invalid_url")]
+
+
+def test_source_audit_rejects_string_boolean() -> None:
+    result = TOOL_FUNCTIONS["source_audit"](items=[{"title": "A", "url": "https://example.org/a"}], require_date="false")
+    assert result["error"] == "TypeError"

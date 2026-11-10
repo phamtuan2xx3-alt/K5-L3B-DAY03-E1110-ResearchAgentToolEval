@@ -28,7 +28,7 @@ class ResearchAgent:
         self.tools = tools or []
         self.model = model
 
-    def run(self, user_messages: list[dict[str, str]], *, tool_choice: Any | None = None) -> AgentRun:
+    def run(self, user_messages: list[dict[str, str]], *, tool_choice: Any | None = None, allow_actions: bool = True) -> AgentRun:
         messages = [{"role": "system", "content": self.system_prompt}, *user_messages]
         response = self.provider.complete(
             messages,
@@ -39,6 +39,10 @@ class ResearchAgent:
         )
         results: list[dict[str, Any]] = []
         for call in response.tool_calls:
+            if call.name == "send" and not allow_actions:
+                results.append({"tool": call.name, "args": call.args, "result": {
+                    "status": "blocked_in_eval", "message": "External sends are not executed during eval. Tool calls and arguments are still scored unchanged."}})
+                continue
             func = TOOL_FUNCTIONS.get(call.name)
             if not func:
                 results.append({"tool": call.name, "error": "unknown_tool"})

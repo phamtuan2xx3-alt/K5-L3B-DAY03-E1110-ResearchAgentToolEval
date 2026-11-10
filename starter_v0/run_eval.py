@@ -276,6 +276,7 @@ def main() -> None:
     artifact_version = build_artifact_version(args.version, args.system_prompt, args.tools)
     provider = make_provider(args.provider)
     selected_model = args.model or getattr(provider, "default_model", None)
+    model_pool = [selected_model]
     dataset_info = load_dataset_info(args.eval_cases)
     cases = load_cases(args.eval_cases, args.phase)
     if not cases:
@@ -286,12 +287,13 @@ def main() -> None:
     openai_tools = to_openai_tools(tool_declarations)
 
     results: list[dict[str, Any]] = []
-    for case in cases:
-        print(f"Running {case['id']}...", flush=True)
-        agent = ResearchAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=args.model)
+    for case_index, case in enumerate(cases):
+        case_model = model_pool[case_index % len(model_pool)]
+        print(f"Running {case['id']} [{case_model}]...", flush=True)
+        agent = ResearchAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=case_model)
         try:
             tool_choice = None if case["expect"].get("no_tool") else "required"
-            run = agent.run(case_messages(case), tool_choice=tool_choice)
+            run = agent.run(case_messages(case), tool_choice=tool_choice, allow_actions=False)
             calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
             result = evaluate_phase_b(case, calls, run.text)
             tool_results = run.tool_results
@@ -320,6 +322,10 @@ def main() -> None:
             "expect": case["expect"],
             "result": result,
             "tool_results": tool_results,
+            "model": getattr(provider, "last_model", selected_model),
+            "requested_model": case_model,
+            "finish_reason": getattr(provider, "last_finish_reason", None),
+            "usage": getattr(provider, "last_usage", None),
         })
 
     summary = summarize(results)
@@ -341,7 +347,12 @@ def main() -> None:
         "phase": args.phase,
         "suite": args.suite,
         "provider": args.provider,
-        "model": selected_model,
+        "action_execution": "blocked_in_eval",
+        "max_output_tokens": getattr(provider, "max_output_tokens", None),
+        "model": selected_model if len(model_pool) == 1 else "mixed",
+        "model_pool": model_pool,
+        "model_selection": "round_robin" if len(model_pool) > 1 else "fixed",
+        "models_used": sorted({item["model"] for item in results if item.get("model")}),
         "system_prompt": str(args.system_prompt),
         "tools": str(args.tools),
         "eval_cases": str(args.eval_cases),

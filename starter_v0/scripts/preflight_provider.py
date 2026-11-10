@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -36,7 +37,7 @@ def main() -> None:
     selected_model = args.model or getattr(provider, "default_model", None)
     print(f"OK provider={args.provider} model={selected_model}")
     print(f"tool={first.name}")
-    print(f"args={first.args}")
+    print(f"args={json.dumps(first.args, ensure_ascii=True)}")
 
 
 if __name__ == "__main__":

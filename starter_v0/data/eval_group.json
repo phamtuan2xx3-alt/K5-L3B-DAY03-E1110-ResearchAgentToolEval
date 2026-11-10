@@ -3,5 +3,86 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_audit_duplicate_sources", "phase": "B", "failure_type": "wrong_tool",
+      "query": "Kiểm tra URL trùng và tiêu đề còn thiếu trong danh sách này, không yêu cầu ngày: [{\"title\":\"Bài A\",\"url\":\"https://example.org/a#intro\"},{\"title\":\"Bài A\",\"url\":\"https://example.org/a#conclusion\"}]. Chỉ kiểm tra metadata đã cho, không tìm web và không định dạng bản tin.",
+      "expect": {"tool_calls": [{"name": "source_audit", "args": {"require_date": false}}]},
+      "metadata": {"what_it_tests": "Route tới tool mới source_audit với nguồn có sẵn, bỏ yêu cầu ngày theo user."}
+    },
+    {
+      "id": "G02_read_exact_report_url", "phase": "B", "failure_type": "wrong_arg_value",
+      "query": "Đọc đúng bài https://example.org/reports/agent-evaluation và tóm tắt, không tìm bài thay thế.",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://example.org/reports/agent-evaluation"}}]},
+      "metadata": {"what_it_tests": "URL cụ thể phải được giữ nguyên và dùng fetch thay vì lookup."}
+    },
+    {
+      "id": "G03_internal_privacy_policy", "phase": "B", "failure_type": "wrong_tool",
+      "query": "Tra tài liệu chính sách nội bộ công ty về data privacy và xử lý dữ liệu cá nhân. Chỉ dùng nhóm chính sách data_privacy, không tìm web.",
+      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "data_privacy"}}]},
+      "metadata": {"what_it_tests": "Phân biệt kho chính sách nội bộ với tin tức public; truyền đúng policy_area."}
+    },
+    {
+      "id": "G04_recent_scholarly_papers", "phase": "B", "failure_type": "wrong_arg_value",
+      "query": "Tìm trên arXiv đúng 2 paper về graph neural networks, sắp xếp theo ngày nộp mới nhất (submittedDate). Chỉ tìm metadata paper, chưa đọc PDF.",
+      "expect": {"tool_calls": [{"name": "papers", "args": {"max_results": 2, "sort_by": "submittedDate"}}]},
+      "metadata": {"what_it_tests": "Paper discovery khác đọc full text; giữ số lượng và sort enum."}
+    },
+    {
+      "id": "G05_format_existing_items", "phase": "B", "failure_type": "unnecessary_tool",
+      "query": "Chỉ định dạng dữ liệu có sẵn thành brief, không tìm thêm: [{\"title\":\"Báo cáo A\",\"summary\":\"Kết quả đánh giá agent.\",\"url\":\"https://example.org/a\",\"source\":\"example.org\"}].",
+      "expect": {"tool_calls": [{"name": "format", "args": {"template": "brief"}}]},
+      "metadata": {"what_it_tests": "Không gọi retrieval/audit thừa khi chỉ được yêu cầu format dữ liệu có sẵn."}
+    },
+    {
+      "id": "G06_audit_date_requirement_correction", "phase": "B", "failure_type": "wrong_arg_value",
+      "turns": [
+        {"role": "user", "content": "Rà metadata nguồn [{\"title\":\"Nguồn A\",\"url\":\"https://example.org/a\"}], ban đầu không cần ngày."},
+        {"role": "user", "content": "Đổi lại: cần kiểm tra ngày xuất bản nữa."},
+        {"role": "user", "content": "Chỉ báo thiếu metadata, không tra web và không tự bổ sung ngày."}
+      ],
+      "expect": {"tool_calls": [{"name": "source_audit", "args": {"require_date": true}}]},
+      "metadata": {"what_it_tests": "Tool mới nhận correction require_date=false sang true, không bịa ngày thiếu."}
+    },
+    {
+      "id": "G07_audit_after_sources_supplied", "phase": "B", "failure_type": "missing_info",
+      "turns": [
+        {"role": "user", "content": "Tôi cần kiểm tra nguồn trùng, nhưng chưa gửi danh sách; không cần kiểm tra ngày."},
+        {"role": "user", "content": "Danh sách đây: [{\"title\":\"A\",\"url\":\"https://example.org/a\"},{\"title\":\"B\",\"url\":\"https://example.org/b\"}]."},
+        {"role": "user", "content": "Bây giờ chỉ rà metadata danh sách vừa cung cấp, bỏ qua ngày như đã nói."}
+      ],
+      "expect": {"tool_calls": [{"name": "source_audit", "args": {"require_date": false}}]},
+      "metadata": {"what_it_tests": "Khi nguồn đã được bổ sung thì audit, không hỏi lại; giữ tùy chọn bỏ qua ngày."}
+    },
+    {
+      "id": "G08_correct_article_url", "phase": "B", "failure_type": "wrong_arg_value",
+      "turns": [
+        {"role": "user", "content": "Đọc https://example.org/draft-old"},
+        {"role": "user", "content": "Nhầm URL. Thay bằng https://example.org/final-report"},
+        {"role": "user", "content": "Chỉ đọc URL mới nhất, đừng đọc bản draft."}
+      ],
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://example.org/final-report"}}]},
+      "metadata": {"what_it_tests": "Lượt sửa URL mới nhất thay thế link cũ, không gọi hai nguồn."}
+    },
+    {
+      "id": "G09_change_social_order_and_count", "phase": "B", "failure_type": "wrong_arg_value",
+      "turns": [
+        {"role": "user", "content": "Tìm 7 tweet top về robotics."},
+        {"role": "user", "content": "Đổi sang mới nhất (Latest), không phải top."},
+        {"role": "user", "content": "Chỉ 2 tweet thôi, vẫn chủ đề robotics."}
+      ],
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"search_type": "Latest", "limit": 2}}]},
+      "metadata": {"what_it_tests": "Đồng thời cập nhật sort và limit, giữ chủ đề trước đó."}
+    },
+    {
+      "id": "G10_switch_source_keep_month", "phase": "B", "failure_type": "wrong_tool",
+      "turns": [
+        {"role": "user", "content": "Tìm bài đăng Twitter về GraphRAG trong tháng này."},
+        {"role": "user", "content": "Bỏ Twitter. Chuyển sang tin tức web trong tháng này."},
+        {"role": "user", "content": "Giữ chủ đề GraphRAG; không tìm thêm tweet."}
+      ],
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "GraphRAG", "topic": "news", "timeframe": "month"}}]},
+      "metadata": {"what_it_tests": "Chuyển nguồn và giữ topic/timeframe; không gọi nguồn đã hủy."}
+    }
+  ]
 }

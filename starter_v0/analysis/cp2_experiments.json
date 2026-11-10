@@ -1,0 +1,30 @@
+[
+  {
+    "version": "v0",
+    "hypothesis": "Baseline một model trước tối ưu; giữ nguyên prompt/tools",
+    "changed": "baseline",
+    "reason": "Gemini 3.5 Flash Lite; pacing 4,5 giây; thay baseline hai model để so sánh cùng điều kiện",
+    "run": "v0_B_base_gemini_20261110T182510939163.json"
+  },
+  {
+    "version": "v1",
+    "hypothesis": "Chỉ dẫn đoán và gửi ngay gây lỗi missing_info/wrong_boundary; thay bằng kiểm tra thông tin và xác nhận",
+    "changed": "system_prompt.md",
+    "reason": "Thay chỉ dẫn đoán/gửi ngay bằng clarify và xác nhận; giữ nguyên quy tắc một tool để tách ảnh hưởng",
+    "run": "v1_B_base_gemini_20261110T182726997677.json"
+  },
+  {
+    "version": "v2",
+    "hypothesis": "Ép một tool và thiếu routing theo ý định gây thiếu nguồn hoặc gọi tool sai phạm vi",
+    "changed": "system_prompt.md",
+    "reason": "Thay quy tắc một tool bằng routing theo nguồn, nhiều tool độc lập và không gọi tool cho câu meta/ngoài phạm vi",
+    "run": "v2_B_base_gemini_20261110T182947409615.json"
+  },
+  {
+    "version": "v3",
+    "hypothesis": "Mô tả tool và convention arguments mơ hồ khiến query mở rộng và tham số không nhất quán",
+    "changed": "tools.yaml",
+    "reason": "Viết rõ khi nào dùng/không dùng và convention tham số cho 10 tool; không đổi tên, signature hoặc bộ case",
+    "run": "v3_B_base_gemini_20261110T183254561353.json"
+  }
+]

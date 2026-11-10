@@ -1,0 +1,121 @@
+﻿version,model,case_id,passed,observed_mismatch,finish_reason,prompt_tokens,completion_tokens,failures,actual_tool_calls
+v3-gemini-reference,gemini-3.5-flash-lite,R01_user_tweets_routing,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""limit"": 5, ""screenname"": ""sama""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R02_search_tweets_routing,True,,,,,[],"[{""name"": ""social_search"", ""args"": {""query"": ""GPT-5"", ""search_type"": ""Latest""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R03_web_news_routing,False,wrong_arg_value,,,,"[""query: expected 'AI', got 'artificial intelligence news'""]","[{""name"": ""lookup"", ""args"": {""topic"": ""news"", ""query"": ""artificial intelligence news"", ""timeframe"": ""day""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R04_read_url_routing,True,,,,,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://openai.com/blog/gpt-5""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R05_limit_arg,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""limit"": 10, ""screenname"": ""elonmusk""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R06_timeframe_arg,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""timeframe"": ""week"", ""query"": ""công nghệ"", ""topic"": ""news""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R07_search_type_arg,True,,,,,[],"[{""name"": ""social_search"", ""args"": {""search_type"": ""Top"", ""query"": ""OpenAI""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R08_out_of_scope,True,,,,,[],[]
+v3-gemini-reference,gemini-3.5-flash-lite,R09_no_tool_capability,True,,,,,[],[]
+v3-gemini-reference,gemini-3.5-flash-lite,R10_missing_handle,True,,,,,[],"[{""name"": ""clarify"", ""args"": {""question"": ""Bạn muốn tóm tắt 5 tweet mới nhất từ tài khoản Twitter/X nào?"", ""response_type"": ""text""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R11_missing_url,True,,,,,[],"[{""name"": ""clarify"", ""args"": {""response_type"": ""text"", ""question"": ""Bạn vui lòng cung cấp đường dẫn (URL) của bài viết cần tóm tắt nhé!""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R12_confirm_before_send,False,wrong_arg_value,,,,"[""response_type: expected 'yes_no', got 'text'""]","[{""name"": ""clarify"", ""args"": {""question"": ""Bạn chưa cung cấp nội dung bản tin cần đăng lên Telegram. Bạn vui lòng gửi nội dung bản tin nhé?"", ""response_type"": ""text""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R13_parallel_web_and_tweets,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""query"": ""AI"", ""topic"": ""news"", ""timeframe"": ""day""}}, {""name"": ""social_search"", ""args"": {""search_type"": ""Latest"", ""query"": ""AI""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,R14_out_of_scope_coding,True,,,,,[],[]
+v3-gemini-reference,gemini-3.5-flash-lite,M01_clarify_then_fill,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 5}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,M02_carryover_timeframe,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""topic"": ""news"", ""timeframe"": ""day"", ""query"": ""robotics""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,M03_correction_handle,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""karpathy"", ""limit"": 3}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,M04_clarify_then_url,True,,,,,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://anthropic.com/news/claude""}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,M05_correction_limit,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 3}}]"
+v3-gemini-reference,gemini-3.5-flash-lite,M06_switch_tool,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""query"": ""OpenAI"", ""topic"": ""news"", ""timeframe"": ""week""}}]"
+v3-qwen3b,qwen2.5:3b,R01_user_tweets_routing,False,wrong_arg_value,tool_calls,2388,22,"[""screenname: expected 'sama', got 'samaltman'""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""samaltman""}}]"
+v3-qwen3b,qwen2.5:3b,R02_search_tweets_routing,True,,tool_calls,2392,30,[],"[{""name"": ""social_search"", ""args"": {""query"": ""GPT-5"", ""search_type"": ""Latest""}}]"
+v3-qwen3b,qwen2.5:3b,R03_web_news_routing,True,,tool_calls,2390,32,[],"[{""name"": ""lookup"", ""args"": {""query"": ""AI"", ""timeframe"": ""day"", ""topic"": ""news""}}]"
+v3-qwen3b,qwen2.5:3b,R04_read_url_routing,True,,tool_calls,2396,28,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://openai.com/blog/gpt-5""}}]"
+v3-qwen3b,qwen2.5:3b,R05_limit_arg,True,,tool_calls,2389,29,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 10}}]"
+v3-qwen3b,qwen2.5:3b,R06_timeframe_arg,True,,tool_calls,2385,42,[],"[{""name"": ""lookup"", ""args"": {""timeframe"": ""week"", ""topic"": ""news"", ""query"": ""tin công nghệ"", ""max_results"": 5}}]"
+v3-qwen3b,qwen2.5:3b,R07_search_type_arg,True,,tool_calls,2391,28,[],"[{""name"": ""social_search"", ""args"": {""query"": ""OpenAI"", ""search_type"": ""Top""}}]"
+v3-qwen3b,qwen2.5:3b,R08_out_of_scope,True,,stop,2397,95,[],[]
+v3-qwen3b,qwen2.5:3b,R09_no_tool_capability,True,,stop,2387,104,[],[]
+v3-qwen3b,qwen2.5:3b,R10_missing_handle,False,missing_tool_call,tool_calls,2388,27,"[""missing tool call clarify"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""limit"": 5, ""screenname"": ""twitter_handle""}}]"
+v3-qwen3b,qwen2.5:3b,R11_missing_url,False,missing_tool_call,stop,2386,23,"[""missing tool call clarify""]",[]
+v3-qwen3b,qwen2.5:3b,R12_confirm_before_send,False,missing_tool_call,tool_calls,2387,32,"[""missing tool call clarify"", ""extra tool call send""]","[{""name"": ""send"", ""args"": {""text"": ""Đăng bản tin này lên Telegram giúp mình"", ""confirmed"": false}}]"
+v3-qwen3b,qwen2.5:3b,R13_parallel_web_and_tweets,True,,tool_calls,2394,59,[],"[{""name"": ""lookup"", ""args"": {""query"": ""AI"", ""timeframe"": ""day"", ""topic"": ""news""}}, {""name"": ""social_search"", ""args"": {""query"": ""AI"", ""search_type"": ""Latest""}}]"
+v3-qwen3b,qwen2.5:3b,R14_out_of_scope_coding,False,unexpected_tool_call,tool_calls,2391,44,"[""expected no tool call""]","[{""name"": ""clarify"", ""args"": {""question"": ""Bạn muốn tôi viết hàm tính Fibonacci bằng cách sử dụng đệ quy trong ngôn ngữ nào?"", ""response_type"": ""string""}}]"
+v3-qwen3b,qwen2.5:3b,M01_clarify_then_fill,True,,tool_calls,2455,28,[],"[{""name"": ""timeline"", ""args"": {""limit"": 5, ""screenname"": ""elonmusk""}}]"
+v3-qwen3b,qwen2.5:3b,M02_carryover_timeframe,True,,tool_calls,2453,40,[],"[{""name"": ""lookup"", ""args"": {""query"": ""robotics"", ""max_results"": 5, ""timeframe"": ""day"", ""topic"": ""news""}}]"
+v3-qwen3b,qwen2.5:3b,M03_correction_handle,False,wrong_arg_value,tool_calls,2454,24,"[""screenname: expected 'karpathy', got 'andrejkarpathy'"", ""limit: expected 3, got None""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""andrejkarpathy""}}]"
+v3-qwen3b,qwen2.5:3b,M04_clarify_then_url,True,,tool_calls,2451,27,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://anthropic.com/news/claude""}}]"
+v3-qwen3b,qwen2.5:3b,M05_correction_limit,True,,tool_calls,2451,28,[],"[{""name"": ""timeline"", ""args"": {""limit"": 3, ""screenname"": ""elonmusk""}}]"
+v3-qwen3b,qwen2.5:3b,M06_switch_tool,False,missing_tool_call,tool_calls,2456,28,"[""missing tool call lookup"", ""extra tool call social_search""]","[{""name"": ""social_search"", ""args"": {""query"": ""OpenAI"", ""search_type"": ""Latest""}}]"
+v3-llama1b,llama3.2:1b,R01_user_tweets_routing,False,wrong_arg_value,tool_calls,2429,19,"[""screenname: expected 'sama', got 'SamAltman'""]","[{""name"": ""timeline"", ""args"": {""limit"": 1, ""screenname"": ""SamAltman""}}]"
+v3-llama1b,llama3.2:1b,R02_search_tweets_routing,False,missing_tool_call,tool_calls,2433,21,"[""missing tool call social_search"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""type"": ""function"", ""function"": ""timeline"", ""parameters"": {""limit"": 5, ""screenname"": ""twitter""}}}]"
+v3-llama1b,llama3.2:1b,R03_web_news_routing,False,missing_tool_call,length,2430,512,"[""missing tool call lookup"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""tin_tuc"", ""limit"": ""10""}}]"
+v3-llama1b,llama3.2:1b,R04_read_url_routing,False,missing_tool_call,stop,2437,194,"[""missing tool call fetch""]",[]
+v3-llama1b,llama3.2:1b,R05_limit_arg,False,wrong_arg_value,tool_calls,2429,24,"[""screenname: expected 'elonmusk', got None"", ""limit: expected 10, got None""]","[{""name"": ""timeline"", ""args"": {""type"": ""function"", ""function"": ""timeline"", ""parameters"": {""limit"": 10, ""screenname"": ""@elonmusk""}}}]"
+v3-llama1b,llama3.2:1b,R06_timeframe_arg,False,missing_tool_call,stop,2426,142,"[""missing tool call lookup""]",[]
+v3-llama1b,llama3.2:1b,R07_search_type_arg,False,wrong_arg_value,tool_calls,2432,24,"[""search_type: expected 'Top', got None""]","[{""name"": ""social_search"", ""args"": {""parameters"": {""query"": ""OpenAI"", ""search_type"": ""Top""}, ""type"": ""function"", ""function"": ""social_search""}}]"
+v3-llama1b,llama3.2:1b,R08_out_of_scope,True,,stop,2437,257,[],[]
+v3-llama1b,llama3.2:1b,R09_no_tool_capability,True,,stop,2428,72,[],[]
+v3-llama1b,llama3.2:1b,R10_missing_handle,False,missing_tool_call,tool_calls,2429,22,"[""missing tool call clarify"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""parameters"": {""limit"": 5, ""screenname"": ""@username""}, ""type"": ""function"", ""function"": ""timeline""}}]"
+v3-llama1b,llama3.2:1b,R11_missing_url,False,missing_tool_call,stop,2427,497,"[""missing tool call clarify""]",[]
+v3-llama1b,llama3.2:1b,R12_confirm_before_send,False,missing_tool_call,stop,2428,194,"[""missing tool call clarify""]",[]
+v3-llama1b,llama3.2:1b,R13_parallel_web_and_tweets,False,missing_tool_call,tool_calls,2434,106,"[""missing tool call lookup"", ""query: expected 'AI', got None"", ""extra tool call social_search"", ""extra tool call fetch""]","[{""name"": ""social_search"", ""args"": {""parameters"": {""limit"": 5, ""query"": ""tin AI hôm nay"", ""search_type"": ""Latest""}, ""type"": ""function"", ""function"": ""social_search""}}, {""name"": ""social_search"", ""args"": {""type"": ""function"", ""function"": ""social_search"", ""parameters"": {""limit"": 5, ""query"": ""tin AI"", ""search_type"": ""Latest""}}}, {""name"": ""fetch"", ""args"": {""type"": ""function"", ""function"": ""fetch"", ""parameters"": {""url"": ""https://www.ai-magazine.com/2023/02/20/ai-technology-in-the-world-of-artificial-intelligence/""}}}]"
+v3-llama1b,llama3.2:1b,R14_out_of_scope_coding,True,,stop,2431,57,[],[]
+v3-llama1b,llama3.2:1b,M01_clarify_then_fill,False,wrong_arg_value,tool_calls,2497,453,"[""screenname: expected 'elonmusk', got '@elonmusk'""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""@elonmusk"", ""limit"": 5}}]"
+v3-llama1b,llama3.2:1b,M02_carryover_timeframe,False,missing_tool_call,tool_calls,2492,172,"[""missing tool call lookup"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""TinAI_hom_nay"", ""limit"": 5}}]"
+v3-llama1b,llama3.2:1b,M03_correction_handle,False,wrong_arg_value,length,2495,512,"[""screenname: expected 'karpathy', got 'SamAltman'""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""SamAltman"", ""limit"": 3}}]"
+v3-llama1b,llama3.2:1b,M04_clarify_then_url,False,missing_tool_call,stop,2492,26,"[""missing tool call fetch""]",[]
+v3-llama1b,llama3.2:1b,M05_correction_limit,False,wrong_arg_value,length,2491,512,"[""screenname: expected 'elonmusk', got None""]","[{""name"": ""timeline"", ""args"": {""screenname"": null, ""limit"": 3}}]"
+v3-llama1b,llama3.2:1b,M06_switch_tool,False,missing_tool_call,stop,2498,31,"[""missing tool call lookup""]",[]
+v4-local,qwen2.5:3b,R01_user_tweets_routing,False,wrong_arg_value,tool_calls,2244,22,"[""screenname: expected 'sama', got 'samaltman'""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""samaltman""}}]"
+v4-local,qwen2.5:3b,R02_search_tweets_routing,True,,tool_calls,2248,30,[],"[{""name"": ""social_search"", ""args"": {""search_type"": ""Latest"", ""query"": ""GPT-5""}}]"
+v4-local,qwen2.5:3b,R03_web_news_routing,False,wrong_arg_value,tool_calls,2246,33,"[""query: expected 'AI', got 'AI today'"", ""timeframe: expected 'day', got None""]","[{""name"": ""lookup"", ""args"": {""query"": ""AI today"", ""max_results"": 5, ""topic"": ""news""}}]"
+v4-local,qwen2.5:3b,R04_read_url_routing,True,,tool_calls,2252,28,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://openai.com/blog/gpt-5""}}]"
+v4-local,qwen2.5:3b,R05_limit_arg,True,,tool_calls,2245,29,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 10}}]"
+v4-local,qwen2.5:3b,R06_timeframe_arg,False,wrong_arg_value,tool_calls,2241,38,"[""timeframe: expected 'week', got None""]","[{""name"": ""lookup"", ""args"": {""max_results"": 5, ""topic"": ""news"", ""query"": ""tin công nghệ trong tuần này""}}]"
+v4-local,qwen2.5:3b,R07_search_type_arg,True,,tool_calls,2247,28,[],"[{""name"": ""social_search"", ""args"": {""query"": ""OpenAI"", ""search_type"": ""Top""}}]"
+v4-local,qwen2.5:3b,R08_out_of_scope,True,,stop,2253,2,[],[]
+v4-local,qwen2.5:3b,R09_no_tool_capability,True,,stop,2243,105,[],[]
+v4-local,qwen2.5:3b,R10_missing_handle,False,missing_tool_call,tool_calls,2244,28,"[""missing tool call clarify"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""tvtom"", ""limit"": 5}}]"
+v4-local,qwen2.5:3b,R11_missing_url,False,missing_tool_call,stop,2242,23,"[""missing tool call clarify""]",[]
+v4-local,qwen2.5:3b,R12_confirm_before_send,False,missing_tool_call,tool_calls,2243,32,"[""missing tool call clarify"", ""extra tool call send""]","[{""name"": ""send"", ""args"": {""confirmed"": false, ""text"": ""Đăng bản tin này lên Telegram giúp mình""}}]"
+v4-local,qwen2.5:3b,R13_parallel_web_and_tweets,False,missing_tool_call,tool_calls,2250,67,"[""missing tool call social_search"", ""extra tool call timeline""]","[{""name"": ""lookup"", ""args"": {""max_results"": 5, ""topic"": ""news"", ""timeframe"": ""day"", ""query"": ""AI""}}, {""name"": ""timeline"", ""args"": {""screenname"": ""AI_Twitter"", ""limit"": 5}}]"
+v4-local,qwen2.5:3b,R14_out_of_scope_coding,False,unexpected_tool_call,tool_calls,2247,60,"[""expected no tool call""]","[{""name"": ""clarify"", ""args"": {""question"": ""Bạn muốn hàm tính Fibonacci bằng cách sử dụng recursion được viết bằng ngôn ngữ nào?"", ""response_type"": ""choice"", ""options"": [""Python"", ""Java"", ""C++"", ""JavaScript""]}}]"
+v4-local,qwen2.5:3b,M01_clarify_then_fill,True,,tool_calls,2311,28,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 5}}]"
+v4-local,qwen2.5:3b,M02_carryover_timeframe,False,missing_tool_call,tool_calls,2309,34,"[""missing tool call lookup"", ""extra tool call social_search""]","[{""name"": ""social_search"", ""args"": {""limit"": 5, ""query"": ""robotics"", ""search_type"": ""Latest""}}]"
+v4-local,qwen2.5:3b,M03_correction_handle,False,wrong_arg_value,tool_calls,2310,24,"[""screenname: expected 'karpathy', got 'AndrejKarpathy'"", ""limit: expected 3, got None""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""AndrejKarpathy""}}]"
+v4-local,qwen2.5:3b,M04_clarify_then_url,True,,tool_calls,2307,27,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://anthropic.com/news/claude""}}]"
+v4-local,qwen2.5:3b,M05_correction_limit,True,,tool_calls,2307,28,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 3}}]"
+v4-local,qwen2.5:3b,M06_switch_tool,False,missing_tool_call,tool_calls,2312,21,"[""missing tool call lookup"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""OpenAI""}}]"
+v5-local,qwen2.5:3b,R01_user_tweets_routing,False,wrong_arg_value,tool_calls,1635,23,"[""screenname: expected 'sama', got 'samuel_altman'""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""samuel_altman""}}]"
+v5-local,qwen2.5:3b,R02_search_tweets_routing,False,missing_tool_call,tool_calls,1639,26,"[""missing tool call social_search"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""Twitter"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,R03_web_news_routing,False,missing_tool_call,tool_calls,1637,33,"[""missing tool call lookup"", ""extra tool call social_search""]","[{""name"": ""social_search"", ""args"": {""query"": ""AI"", ""search_type"": ""Latest"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,R04_read_url_routing,True,,tool_calls,1643,28,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://openai.com/blog/gpt-5""}}]"
+v5-local,qwen2.5:3b,R05_limit_arg,True,,tool_calls,1636,29,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 10}}]"
+v5-local,qwen2.5:3b,R06_timeframe_arg,False,missing_tool_call,tool_calls,1632,36,"[""missing tool call lookup"", ""extra tool call social_search""]","[{""name"": ""social_search"", ""args"": {""query"": ""tin công nghệ"", ""search_type"": ""Latest"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,R07_search_type_arg,True,,tool_calls,1638,34,[],"[{""name"": ""social_search"", ""args"": {""query"": ""OpenAI"", ""search_type"": ""Top"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,R08_out_of_scope,True,,stop,1644,2,[],[]
+v5-local,qwen2.5:3b,R09_no_tool_capability,True,,stop,1634,81,[],[]
+v5-local,qwen2.5:3b,R10_missing_handle,False,missing_tool_call,tool_calls,1635,28,"[""missing tool call clarify"", ""extra tool call timeline""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""tvtom"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,R11_missing_url,False,missing_tool_call,stop,1633,31,"[""missing tool call clarify""]",[]
+v5-local,qwen2.5:3b,R12_confirm_before_send,False,missing_tool_call,stop,1634,28,"[""missing tool call clarify""]",[]
+v5-local,qwen2.5:3b,R13_parallel_web_and_tweets,False,wrong_arg_value,tool_calls,1641,59,"[""topic: expected 'news', got 'general'"", ""missing tool call social_search"", ""extra tool call timeline""]","[{""name"": ""lookup"", ""args"": {""timeframe"": ""day"", ""query"": ""AI"", ""topic"": ""general""}}, {""name"": ""timeline"", ""args"": {""screenname"": ""account_name"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,R14_out_of_scope_coding,False,unexpected_tool_call,tool_calls,1638,37,"[""expected no tool call""]","[{""name"": ""papers"", ""args"": {""sort_by"": ""submittedDate"", ""query"": ""Fibonacci recursion"", ""max_results"": 5}}]"
+v5-local,qwen2.5:3b,M01_clarify_then_fill,True,,tool_calls,1702,28,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 5}}]"
+v5-local,qwen2.5:3b,M02_carryover_timeframe,False,missing_tool_call,tool_calls,1700,28,"[""missing tool call lookup"", ""extra tool call social_search""]","[{""name"": ""social_search"", ""args"": {""query"": ""robotics"", ""search_type"": ""Top""}}]"
+v5-local,qwen2.5:3b,M03_correction_handle,False,wrong_arg_value,tool_calls,1701,24,"[""screenname: expected 'karpathy', got 'AndrejKarpathy'"", ""limit: expected 3, got None""]","[{""name"": ""timeline"", ""args"": {""screenname"": ""AndrejKarpathy""}}]"
+v5-local,qwen2.5:3b,M04_clarify_then_url,True,,tool_calls,1698,27,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://anthropic.com/news/claude""}}]"
+v5-local,qwen2.5:3b,M05_correction_limit,True,,tool_calls,1698,28,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 3}}]"
+v5-local,qwen2.5:3b,M06_switch_tool,False,missing_tool_call,tool_calls,1703,42,"[""missing tool call lookup"", ""extra tool call social_search""]","[{""name"": ""social_search"", ""args"": {""query"": ""OpenAI"", ""search_type"": ""Top"", ""limit"": 5, ""screenname"": ""OpenAI""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R01_user_tweets_routing,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""limit"": 1, ""screenname"": ""sama""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R02_search_tweets_routing,True,,,,,[],"[{""name"": ""social_search"", ""args"": {""query"": ""GPT-5"", ""search_type"": ""Latest""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R03_web_news_routing,False,wrong_arg_value,,,,"[""query: expected 'AI', got 'AI artificial intelligence'""]","[{""name"": ""lookup"", ""args"": {""topic"": ""news"", ""query"": ""AI artificial intelligence"", ""timeframe"": ""day""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R04_read_url_routing,True,,,,,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://openai.com/blog/gpt-5""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R05_limit_arg,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""limit"": 10, ""screenname"": ""elonmusk""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R06_timeframe_arg,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""timeframe"": ""week"", ""query"": ""công nghệ"", ""topic"": ""news""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R07_search_type_arg,True,,,,,[],"[{""name"": ""social_search"", ""args"": {""search_type"": ""Top"", ""query"": ""OpenAI""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R08_out_of_scope,True,,,,,[],[]
+v5-local-gemini,gemini-3.5-flash-lite,R09_no_tool_capability,True,,,,,[],[]
+v5-local-gemini,gemini-3.5-flash-lite,R10_missing_handle,True,,,,,[],"[{""name"": ""clarify"", ""args"": {""question"": ""Bạn muốn xem 5 tweet mới nhất của tài khoản (handle) nào?"", ""response_type"": ""text""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R11_missing_url,True,,,,,[],"[{""name"": ""clarify"", ""args"": {""question"": ""Bạn vui lòng cung cấp đường dẫn (URL) của bài viết bạn muốn tóm tắt nhé."", ""response_type"": ""text""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R12_confirm_before_send,False,wrong_arg_value,,,,"[""response_type: expected 'yes_no', got 'text'""]","[{""name"": ""clarify"", ""args"": {""question"": ""Bạn muốn đăng bản tin nào lên Telegram? Vui lòng cung cấp nội dung bản tin."", ""response_type"": ""text""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R13_parallel_web_and_tweets,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""topic"": ""news"", ""query"": ""AI"", ""timeframe"": ""day""}}, {""name"": ""social_search"", ""args"": {""query"": ""AI"", ""search_type"": ""Latest""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,R14_out_of_scope_coding,True,,,,,[],[]
+v5-local-gemini,gemini-3.5-flash-lite,M01_clarify_then_fill,False,missing_tool_call,,,,"[""missing tool call timeline"", ""extra tool call clarify""]","[{""name"": ""clarify"", ""args"": {""question"": ""Bạn muốn lấy 5 tweet mới nhất của tài khoản nào? Xin vui lòng cung cấp handle chính xác của tài khoản đó (ví dụ: elonmusk)."", ""response_type"": ""text""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,M02_carryover_timeframe,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""topic"": ""news"", ""query"": ""robotics"", ""timeframe"": ""day""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,M03_correction_handle,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""karpathy"", ""limit"": 3}}]"
+v5-local-gemini,gemini-3.5-flash-lite,M04_clarify_then_url,True,,,,,[],"[{""name"": ""fetch"", ""args"": {""url"": ""https://anthropic.com/news/claude""}}]"
+v5-local-gemini,gemini-3.5-flash-lite,M05_correction_limit,True,,,,,[],"[{""name"": ""timeline"", ""args"": {""screenname"": ""elonmusk"", ""limit"": 3}}]"
+v5-local-gemini,gemini-3.5-flash-lite,M06_switch_tool,True,,,,,[],"[{""name"": ""lookup"", ""args"": {""topic"": ""news"", ""timeframe"": ""week"", ""query"": ""OpenAI""}}]"

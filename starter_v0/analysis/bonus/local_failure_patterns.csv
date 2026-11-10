@@ -1,0 +1,7 @@
+﻿version,model,no_tool_when_required,invalid_json_arguments,repeated_calls,wrong_arg_value,missing_tool_call,unexpected_tool_call,length_finish
+v3-gemini-reference,gemini-3.5-flash-lite,0,0,0,2,0,0,0
+v3-qwen3b,qwen2.5:3b,1,0,0,2,4,1,0
+v3-llama1b,llama3.2:1b,6,0,0,6,11,0,3
+v4-local,qwen2.5:3b,1,0,0,4,6,1,0
+v5-local,qwen2.5:3b,2,0,0,3,8,1,0
+v5-local-gemini,gemini-3.5-flash-lite,0,0,0,2,1,0,0

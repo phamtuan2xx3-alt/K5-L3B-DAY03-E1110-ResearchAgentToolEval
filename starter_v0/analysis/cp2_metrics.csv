@@ -1,0 +1,5 @@
+﻿version,model,total_cases,measured_cases,provider_error_cases,passed_cases,case_accuracy,tool_routing_accuracy,argument_accuracy,multiturn_accuracy,run_file
+v0,gemini-3.5-flash-lite,20,20,0,13,0.65,0.8,0.65,0.6667,runs/v0_B_base_gemini_20261110T182510939163.json
+v1,gemini-3.5-flash-lite,20,20,0,14,0.7,0.95,0.7,0.6667,runs/v1_B_base_gemini_20261110T182726997677.json
+v2,gemini-3.5-flash-lite,20,20,0,15,0.75,1.0,0.75,0.6667,runs/v2_B_base_gemini_20261110T182947409615.json
+v3,gemini-3.5-flash-lite,20,20,0,18,0.9,1.0,0.9,1.0,runs/v3_B_base_gemini_20261110T183254561353.json

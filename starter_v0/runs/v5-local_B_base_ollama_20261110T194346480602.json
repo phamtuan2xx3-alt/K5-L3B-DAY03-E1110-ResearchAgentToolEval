@@ -1,0 +1,1529 @@
+{
+  "run_id": "v5-local_B_base_ollama_20261110T194346480602",
+  "version": "v5-local",
+  "artifact_version": "v5-local+p376daba5869e+t53a6d84081fc",
+  "prompt_hash": "376daba5869e98597d14a5e028d73976feba7bb4da145af22515fcbcb698d1b2",
+  "tools_hash": "53a6d84081fcbb577e8728eb5f97e5df5a3cd3f014820209a801d2e24ebd5fa3",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "action_execution": "blocked_in_eval",
+  "max_output_tokens": 512,
+  "model": "qwen2.5:3b",
+  "model_pool": [
+    "qwen2.5:3b"
+  ],
+  "model_selection": "fixed",
+  "models_used": [
+    "qwen2.5:3b"
+  ],
+  "system_prompt": "artifacts\\versions\\v5-local\\system_prompt.md",
+  "tools": "artifacts\\versions\\v5-local\\tools.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day03_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T19:43:46",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 8,
+    "case_accuracy": 0.4,
+    "tool_routing_accuracy": 0.5,
+    "argument_accuracy": 0.4,
+    "multiturn_accuracy": 0.5,
+    "failure_counts": {
+      "wrong_tool": 5,
+      "wrong_arg_value": 3,
+      "missing_info": 2,
+      "wrong_boundary": 1,
+      "out_of_scope": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 3,
+      "missing_tool_call": 8,
+      "unexpected_tool_call": 1
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "samuel_altman"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "screenname: expected 'sama', got 'samuel_altman'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "samuel_altman"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=samuel_altman"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1635,
+        "completion_tokens": 23,
+        "total_tokens": 1658
+      }
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "Twitter",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call social_search",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "Twitter",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=Twitter"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1639,
+        "completion_tokens": 26,
+        "total_tokens": 1665
+      }
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=AI&search_type=Latest"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1637,
+        "completion_tokens": 33,
+        "total_tokens": 1670
+      }
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://openai.com/blog/gpt-5",
+            "items": [
+              {
+                "title": "OpenAI",
+                "url": "https://openai.com/blog/gpt-5",
+                "source": "openai.com",
+                "summary": "OpenAI\n\n# 404\n\nSearch finds no result\n\nThe question still earns its keep\n\nAsk it a new way\n\nby [gpt-6-astra(opens in a new window)](https://chatgpt.com/?surface=work&model=gpt-6-astra-wm&openaicom-did=52cdc990-ae75-4748-bf07-215286d35858&openaicom_referred=true)"
+              }
+            ]
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1643,
+        "completion_tokens": 28,
+        "total_tokens": 1671
+      }
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=elonmusk"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1636,
+        "completion_tokens": 29,
+        "total_tokens": 1665
+      }
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "tin công nghệ",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "tin công nghệ",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/search.php?query=tin+c%C3%B4ng+ngh%E1%BB%87&search_type=Latest"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1632,
+        "completion_tokens": 36,
+        "total_tokens": 1668
+      }
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=OpenAI&search_type=Top"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1638,
+        "completion_tokens": 34,
+        "total_tokens": 1672
+      }
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "None",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 1644,
+        "completion_tokens": 2,
+        "total_tokens": 1646
+      }
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một assistant được tạo ra để hỗ trợ với nhiều tác vụ khác nhau như tìm kiếm thông tin trên mạng xã hội, tìm kiếm tài liệu học thuật, và thậm chí là gửi tin nhắn qua Telegram. Tôi cũng có thể giúp bạn hiểu các chính sách công ty và tìm kiếm các bài báo học thuật. Hãy cho tôi biết bạn cần hỗ trợ với vấn đề gì cụ thể.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 1634,
+        "completion_tokens": 81,
+        "total_tokens": 1715
+      }
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "tvtom",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "tvtom",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=tvtom"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1635,
+        "completion_tokens": 28,
+        "total_tokens": 1663
+      }
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi cần nội dung cụ thể của bài viết bạn muốn tóm tắt. Vui lòng cung cấp URL hoặc nội dung của bài viết đó.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 1633,
+        "completion_tokens": 31,
+        "total_tokens": 1664
+      }
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi cần thấy nội dung cụ thể của bản tin trước khi đăng lên Telegram. Vui lòng cung cấp nội dung tin tức.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 1634,
+        "completion_tokens": 28,
+        "total_tokens": 1662
+      }
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "timeframe": "day",
+              "query": "AI",
+              "topic": "general"
+            }
+          },
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "account_name",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "topic: expected 'news', got 'general'",
+          "missing tool call social_search",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "timeframe": "day",
+            "query": "AI",
+            "topic": "general"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "general",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Artificial intelligence",
+                "url": "https://www.dw.com/en/artificial-intelligence/t-42133476",
+                "source": "dw.com",
+                "summary": "1. Skip to content\n2. Skip to main menu\n3. Skip to more DW sites\n\nIn focus\n\nCOP31Ukraine warAI\n\nLatest audioLatest videos\n\nLive TV\n\nImage: AA/picture alliance\n\n# Artificial intelligence\n\nArtificial intelligence (AI) is technology to make computers and machines simulate human learning, comprehension, decision-making and even creativity.\n\nSkip next section News\n\n## News\n\nNovember 6, 2026\n\n### Data center protesters break into Microsoft site in Amsterdam\n\nNovember 6, 2026 [...] With the rapid advances in AI translation technology, some linguists think human interpreters may soon be obsolete.\n\nSocietyNovember 1, 202609:50 min\n\n### America's AI race: Are the risks being ignored?\n\nUS President Donald Trump says AI is the future. But a growing number of voters are worried about the risks.\n\nPoliticsOctober 24, 202605:15 min\n\n### Deepfakes, bots and distrust: How AI is shaping Israel's election [...] Israel's political parties are using AI for deepfakes, robocalls and bots. Experts warn that it could tilt the election.\n\nPoliticsOctober 19, 2026\n\n### You can get AI answers for free. Who really pays?\n\nEvery AI answer feels free, but there are energy and data center costs.\n\nBusinessOctober 19, 202603:21 min\n\n### The EU wants an AI revolution. But on whose terms?\n\nThe European Union wants to catch up on AI. Can it compete with the US while protecting workers, safety and the climate?",
+                "score": 0.65173227
+              },
+              {
+                "title": "Super Intelligence",
+                "url": "https://www.anl.gov/si",
+                "source": "anl.gov",
+                "summary": "Super Intelligence (SI), also known as Artificial Intelligence (AI), is transforming how we advance science, strengthen national security, and drive U.S. innovation leadership. Argonne is leveraging world-class expertise and computing power to lead in the responsible development and deployment of SI. Our researchers are applying cutting-edge SI to engineer next-generation materials, fortify the nation’s energy infrastructure, speed breakthroughs in medical treatments, and automate scientific",
+                "score": 0.49318945
+              },
+              {
+                "title": "Artificial Intelligence | Artificial Intelligence",
+                "url": "https://aws.amazon.com/blogs/machine-learning/category/artificial-intelligence",
+                "source": "aws.amazon.com",
+                "summary": "Gen Digital built Norton Revamp, a generative AI-powered professional reputation management platform, with an AI-curated News Engine grounded by Web Search on Amazon Bedrock AgentCore. See how the Gen team delivers real-time, cited content suggestions, goal setting, and news feeds with zero data egress and Norton-grade privacy.\n\nBuild a semantic layer for agentic AI with EDB Postgres AI and Amazon Bedrock AgentCore [...] How Gen Digital built Norton Revamp’s AI-curated News Engine with Amazon Bedrock AgentCore Web Search\n\n## How Gen Digital built Norton Revamp’s AI-curated News Engine with Amazon Bedrock AgentCore Web Search [...] Web Answer on Amazon Bedrock AgentCore returns a synthesized, source-cited answer to a natural-language question in a single tool call, with no search, retrieve, synthesize, and citation pipeline to build. Learn how it works and how to add it to an AgentCore Gateway and call it from an agent.\n\nHow Amazon Marketplace evaluates content quality with Amazon SageMaker AI\n\n## How Amazon Marketplace evaluates content quality with Amazon SageMaker AI",
+                "score": 0.39138326
+              },
+              {
+                "title": "What is AI infrastructure? | Glossary | HPE",
+                "url": "https://www.hpe.com/us/en/what-is/ai-infrastructure.html",
+                "source": "hpe.com",
+                "summary": "AI agents: AI agents are intelligent systems that can perform tasks, analyze information, and assist users with decision-making. AI infrastructure provides the compute, networking, and data resources needed to support agent-based systems that operate in real time and at scale. [...] Predictive analytics: Organizations use predictive analytics to identify trends, forecast outcomes, and improve decision-making. AI infrastructure enables businesses to process large datasets and run advanced analytical models more efficiently. [...] AI infrastructure is important to organizations in order to improve scalability, efficiency, reliability, and business innovation.\n AI infrastructure differs from traditional IT infrastructure by being optimized for data-intensive AI workloads and large-scale model training.",
+                "score": 0.37855154
+              },
+              {
+                "title": "AI for a planet under pressure - Stockholm Resilience Centre",
+                "url": "https://www.stockholmresilience.org/research/synthesis-reports/ai-for-a-planet-under-pressure.html",
+                "source": "stockholmresilience.org",
+                "summary": "Stockholm Resilience Centre\n /  Research\n /  Synthesis reports\n /  AI for a planet under pressure\n\n# AI for a planet under pressure\n\n## Editors: Victor Galaz & Maria Schewenius\n\n## Artificial intelligence (AI) is already driving scientific breakthroughs in a variety of research fields, ranging from the life sciences to mathematics. This raises a critical question: can AI be applied both responsibly and effectively to address complex and interconnected sustainability challenges? [...] This report explores the potential and limitations of using AI as a research method in eight issue areas: Preparing for a Future of Interconnected Shocks, Understanding a Complex Earth System, Stewarding Our Blue Planet, Securing Freshwater for All, Enhancing Nature’s Contributions to People, Prospering on an Urban Planet, Improving Sustainability Science Communication, and Collective Decisions for a Planet Under Pressure.",
+                "score": 0.34820226
+              }
+            ]
+          }
+        },
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "account_name",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=account_name"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1641,
+        "completion_tokens": 59,
+        "total_tokens": 1700
+      }
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "sort_by": "submittedDate",
+              "query": "Fibonacci recursion",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": "unexpected_tool_call",
+        "failure_type": "out_of_scope",
+        "failures": [
+          "expected no tool call"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "sort_by": "submittedDate",
+            "query": "Fibonacci recursion",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "Fibonacci recursion",
+            "api_query": "all:Fibonacci AND all:recursion",
+            "total_results": 157,
+            "items": [
+              {
+                "arxiv_id": "2610.37356v1",
+                "title": "On $p$-Adic Valuation Trees Arising from Laplace Transform of Fibonacci Polynomials",
+                "summary": "We study the $p$-adic valuation trees associated with the sequence \\[ e_n=\\int_0^\\infty e^{-t}F_n(t)\\,dt, \\] obtained by evaluating the Laplace transforms of the Fibonacci polynomials at $1$. We answer an open question of Givens and Moll in the negative by constructing an explicit counterexample showing that even internal branches need not be simple. We then reformulate the Givens--Moll lifting criteria for the even and odd subsequences in terms of the roots and derivatives of two associated polynomials. In particular, simple roots modulo $p$ give rise to simple internal branches. Finally, we develop a recursive lifting procedure that determines the unique surviving residue class at each level of a branch associated with a simple root and computes the $p$-adic valuations of the corresponding terms.",
+                "authors": [
+                  "Rigoberto Flórez",
+                  "Robinson Higuita-Diaz",
+                  "José L. Ramírez"
+                ],
+                "published": "2026-10-27T14:55:02Z",
+                "updated": "2026-10-27T14:55:02Z",
+                "url": "http://arxiv.org/abs/2610.37356v1",
+                "pdf_url": "https://arxiv.org/pdf/2610.37356v1",
+                "source": "arxiv.org",
+                "primary_category": "math.NT",
+                "categories": [
+                  "math.NT"
+                ]
+              },
+              {
+                "arxiv_id": "2609.31593v1",
+                "title": "LAT: a Latinized aperiodic tiling for any sample size",
+                "summary": "Quasi-Monte Carlo methods allow computer experiments to be run with far fewer simulations than crude Monte Carlo. A digital net in base two, such as Sobol', is however only balanced when the number of samples is a power of two, and Latin Hypercube Sampling (LHS) accepts any sample size but only controls the one-dimensional margins. This work proposes a space- filling design defined for any sample size, referred to as LAT for Latinized aperiodic tiling. The unit hypercube is cut recursively across its longest edge following the golden section into N cells of equal volume. One point is then placed in each cell, and the margins are made Latin while every point stays inside its own cell. The construction only uses integer splits and costs O(dNlog N). The recursion is shown to follow the Fibonacci word and its aperiodicity is analysed. LAT is assessed with four L2-discrepancies and with the integration error on analytical functions and engineering emulators, and compared to Monte Carlo, LHS, Halton, Sobol' and a rank-1 lattice. LAT is better than Monte Carlo and LHS as soon as the integrand has interactions. Sobol' remains more accurate at the powers of two, but its error is one to two orders of magnitude larger at other sample sizes. The accuracy of LAT does not depend on the sample size. Finally, the cells form a partition of the hypercube for any N. This allows one to refine the design locally, to search for an optimum by splitting cells and to sample non-rectangular regions.",
+                "authors": [
+                  "Pamphile T. Roy"
+                ],
+                "published": "2026-09-25T17:51:55Z",
+                "updated": "2026-09-25T17:51:55Z",
+                "url": "http://arxiv.org/abs/2609.31593v1",
+                "pdf_url": "https://arxiv.org/pdf/2609.31593v1",
+                "source": "arxiv.org",
+                "primary_category": "stat.ME",
+                "categories": [
+                  "stat.ME"
+                ]
+              },
+              {
+                "arxiv_id": "2609.25276v1",
+                "title": "Finite-state automata for exact matrix product operators of tight-binding Hamiltonians: fractals, quasicrystals, trees and hyperbolic lattices",
+                "summary": "Inspired by the recent progress in the simulation of tight-binding Hamiltonians on large lattices using tensor networks, we introduce a systematic matrix product operator (MPO) construction for single-particle Hamiltonians on recursively structured lattices. Taking advantage of this recursive structure, we encode the lattice geometry in a finite-state automaton and, adapting ideas from Abelian-symmetric tensor networks, obtain an exact and analytical MPO representation of the Hamiltonian, where the number of tensors grows logarithmically with the system size and the bond dimension is set by the number of automaton states. Several examples demonstrate the generality of the framework: regular lattices, fractals, Cayley trees, hyperbolic lattices, and one- and two-dimensional Fibonacci quasicrystals. Combined with the kernel polynomial method, these MPO representations enable large-scale calculations of spectral properties without explicitly constructing the full Hamiltonian. This provides a unified route to the exploration of electronic properties across a broad class of lattices at exponentially large system sizes.",
+                "authors": [
+                  "Marta Brzezińska",
+                  "Jeanne Colbois",
+                  "Loïc Herviou"
+                ],
+                "published": "2026-09-21T18:20:08Z",
+                "updated": "2026-09-21T18:20:08Z",
+                "url": "http://arxiv.org/abs/2609.25276v1",
+                "pdf_url": "https://arxiv.org/pdf/2609.25276v1",
+                "source": "arxiv.org",
+                "primary_category": "cond-mat.mes-hall",
+                "categories": [
+                  "cond-mat.mes-hall",
+                  "cond-mat.dis-nn",
+                  "physics.comp-ph"
+                ]
+              },
+              {
+                "arxiv_id": "2609.01729v1",
+                "title": "RecKAN: Kolmogorov-Arnold Networks with a Learnable Recursive Polynomial Basis",
+                "summary": "Kolmogorov--Arnold Networks (KANs) replace the fixed scalar weights of a standard network with learnable univariate functions on each edge, but existing variants still fix the \\emph{basis} that those functions are built from: B-splines, Chebyshev polynomials, wavelets, or Jacobi polynomials, and learn only the combination weights over it. We introduce RecKAN, which instead defines the basis itself by a second order polynomial recurrence, $R_{n+1}(x) = (ax^2+bx+c)R_n(x) + (dx+e)R_{n-1}(x)$, whose five coefficients are learned jointly with the network. We show this recurrence recovers several classical polynomial families including both kinds of Chebyshev polynomials, Fibonacci, Pell, and Jacobsthal polynomials as special cases, and prove that its degree grows linearly in $n$ exactly on the sub-family containing all of them, giving a concrete sense in which the learned basis can move beyond any fixed classical choice. Across multiple benchmark datasets spanning image, text, biomedical time series classification, and time series forecasting, RecKAN outperforms three parameter-matched KAN baselines (Chebyshev, Jacobi, and spline based) on all classification tasks and achieves the lowest MSE on the ETTh1 forecasting benchmark. Additionally, when used as a classifier head with a convolutional backbone, RecKAN achieves higher accuracy than standard MLP heads on Fashion MNIST, CIFAR-10, and SVHN. On a synthetic function fitting benchmark it tracks a sharply oscillatory target that a parameter comparable MLP under fits. We further show that the learned recurrence coefficients are interpretable: on the task requiring the most local structure, training moves the basis away from the linear degree growth regime that contains every classical family we identify, consistent with our theoretical analysis of what that structural shift enables.",
+                "authors": [
+                  "Amirhosein Azarpour"
+                ],
+                "published": "2026-09-01T18:01:32Z",
+                "updated": "2026-09-01T18:01:32Z",
+                "url": "http://arxiv.org/abs/2609.01729v1",
+                "pdf_url": "https://arxiv.org/pdf/2609.01729v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.LG",
+                "categories": [
+                  "cs.LG",
+                  "cs.AI"
+                ]
+              },
+              {
+                "arxiv_id": "2608.29411v1",
+                "title": "Where Induction Runs Out: Description-Length Difficulty and the Memorisation Gap in Integer-Sequence Benchmarks",
+                "summary": "Integer sequences from the On-Line Encyclopedia of Integer Sequences (OEIS) are increasingly used to benchmark mathematical reasoning in language models. We ask what such benchmarks actually measure, using an exactly computable reference learner: two-part minimum description length (MDL) over the class of P-recursive (holonomic) recurrences, evaluated on every prefix of a sequence as terms arrive. Three findings follow. First, MDL difficulty is a parameter count. The discovery point nd, the first prefix length at which a symbolic hypothesis beats verbatim storage, is predicted almost exactly by a combinatorial identifiability bound on the selected operator's order and degree. It is invariant to term magnitude: scaling Fibonacci over twelve orders of magnitude leaves nd unchanged, because a hypothesis must encode its own initial conditions and the magnitude cancels. Second, at scale the learner exhibits a regime our curated corpus could not produce even once: across 20,000 OEIS sequences, 89.98% of those that fit a recurrence on some prefix fit none at full length. We call this the wilderness -- induction acquires a theory, loses it, and never recovers. Third, evaluating three language models on sequences stratified by these MDL regimes refuted our pre-registered hypothesis: models do not confabulate where MDL reports no theory, but hedge appropriately. Confident errors are inverted, concentrating on the easy stratum, where apparent competence tracks recognition of the sequence rather than induction of its rule. OEIS-derived benchmarks therefore substantially measure memorisation, and MDL supplies a cheap, contamination-free difficulty signal they currently lack. Code and data are released.",
+                "authors": [
+                  "Sabilashan Ganeshan"
+                ],
+                "published": "2026-08-29T19:25:31Z",
+                "updated": "2026-08-29T19:25:31Z",
+                "url": "http://arxiv.org/abs/2608.29411v1",
+                "pdf_url": "https://arxiv.org/pdf/2608.29411v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.LG",
+                "categories": [
+                  "cs.LG",
+                  "cs.SC"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1638,
+        "completion_tokens": 37,
+        "total_tokens": 1675
+      }
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=elonmusk"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1702,
+        "completion_tokens": 28,
+        "total_tokens": 1730
+      }
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "robotics",
+              "search_type": "Top"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "robotics",
+            "search_type": "Top"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/search.php?query=robotics&search_type=Top"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1700,
+        "completion_tokens": 28,
+        "total_tokens": 1728
+      }
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "AndrejKarpathy"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'karpathy', got 'AndrejKarpathy'",
+          "limit: expected 3, got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "AndrejKarpathy"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=AndrejKarpathy"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1701,
+        "completion_tokens": 24,
+        "total_tokens": 1725
+      }
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://anthropic.com/news/claude",
+            "items": [
+              {
+                "title": "https://anthropic.com/news/claude",
+                "url": "https://anthropic.com/news/claude",
+                "source": "anthropic.com",
+                "summary": "[Skip to main content](https://www.anthropic.com/news/claude#main-content)\n\nA 404 poem byClaude Fable 5Claude Opus 5.5Claude Sonnet 5.5Claude Haiku 5.5\n\nYou came"
+              }
+            ]
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1698,
+        "completion_tokens": 27,
+        "total_tokens": 1725
+      }
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=elonmusk"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1698,
+        "completion_tokens": 28,
+        "total_tokens": 1726
+      }
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top",
+              "limit": 5,
+              "screenname": "OpenAI"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top",
+            "limit": 5,
+            "screenname": "OpenAI"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'screenname'"
+          }
+        }
+      ],
+      "model": "qwen2.5:3b",
+      "requested_model": "qwen2.5:3b",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1703,
+        "completion_tokens": 42,
+        "total_tokens": 1745
+      }
+    }
+  ]
+}

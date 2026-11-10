@@ -1,0 +1,10 @@
+{
+  "kind": "aborted_runtime_attempt",
+  "model": "llama3.2:1b",
+  "version": "v3-llama1b",
+  "observed_case": "R03_web_news_routing",
+  "observed_generation_tokens_at_least": 13002,
+  "observed_behavior": "Repeated generation and context shifts without completing response",
+  "action": "Stopped client, then introduced 512-token local output cap and reran complete eval",
+  "valid_full_eval": false
+}

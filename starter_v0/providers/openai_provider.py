@@ -17,11 +17,17 @@ class OpenAIProvider:
         base_url: str | None = None,
         default_model: str = "gpt-4o-mini",
         api_key_default: str | None = None,
+        max_output_tokens: int | None = None,
     ) -> None:
         self.api_key_env = api_key_env
         self.api_key_default = api_key_default
         self.base_url = base_url
         self.default_model = default_model
+        if max_output_tokens is not None and max_output_tokens <= 0:
+            raise ValueError("max_output_tokens must be positive")
+        self.max_output_tokens = max_output_tokens
+        self.last_finish_reason: str | None = None
+        self.last_usage: dict[str, Any] | None = None
 
     def complete(
         self,
@@ -32,6 +38,8 @@ class OpenAIProvider:
         temperature: float = 0.0,
         tool_choice: Any | None = None,
     ) -> ModelResponse:
+        self.last_finish_reason = None
+        self.last_usage = None
         try:
             from openai import OpenAI
         except ImportError as exc:
@@ -51,9 +59,15 @@ class OpenAIProvider:
             kwargs["tools"] = tools
         if tool_choice is not None:
             kwargs["tool_choice"] = tool_choice
+        if self.max_output_tokens is not None:
+            kwargs["max_tokens"] = self.max_output_tokens
 
         resp = client.chat.completions.create(**kwargs)
         msg = resp.choices[0].message
+        self.last_finish_reason = getattr(resp.choices[0], "finish_reason", None)
+        usage = getattr(resp, "usage", None)
+        if usage is not None:
+            self.last_usage = {key: getattr(usage, key, None) for key in ("prompt_tokens", "completion_tokens", "total_tokens")}
         calls: list[ToolCall] = []
         for call in msg.tool_calls or []:
             raw_args = call.function.arguments or "{}"
