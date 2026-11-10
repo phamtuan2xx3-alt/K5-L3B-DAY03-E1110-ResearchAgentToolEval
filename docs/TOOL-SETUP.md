@@ -221,3 +221,7 @@ Before class, at least one person per group should have:
 - optional `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
 - optional `ARXIV_USER_AGENT`
 - `python scripts/preflight_provider.py --provider openrouter` passes
+
+### social_search trả 403 chưa subscribe
+
+Nếu response là `You are not subscribed to this API.`, đăng nhập tài khoản sở hữu RAPIDAPI_KEY và đăng ký Twitter API45 tại https://rapidapi.com/alexanderxbx/api/twitter-api45 sau khi kiểm tra giá. Không cần đổi key nếu đăng ký trên đúng tài khoản. Nếu dùng tài khoản khác đã subscribe, cập nhật RAPIDAPI_KEY tương ứng trong .env. GEMINI_API_KEY không thay thế quyền này; không retry liên tục lỗi quyền truy cập.

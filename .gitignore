@@ -17,8 +17,51 @@ starter/
 # Tool scratch output
 arxiv_papers/
 
+# Portable local model runtime, weights, downloads and logs
+.local-models/
+.playwright-mcp/
+.local-demo/
+
 # OS / editor
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+
+# Local Python tooling output (not acceptance evidence)
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+
+# Streamlit credentials; keep .streamlit/config.toml tracked
+.streamlit/secrets.toml
+
+# One-off branch survey and superseded diagnostic, not used by the submission
+/docs/BRANCH-REVIEW.md
+/docs/PUSH-CHECKLIST.md
+/starter_v0/analysis/branch_runs_review.json
+/starter_v0/analysis/social_search_after_fix.json
+
+# Redundant working notes; final reports/CSV/Telegram flow contain the evidence
+/starter_v0/analysis/cp2_checks.md
+/starter_v0/analysis/bonus/telegram_send_draft.json
+
+# Ad-hoc one-turn UI trial; keep the selected CLI/UI and Telegram transcripts
+/starter_v0/transcripts/cp3_ui_0eb8a09855d845dc938191402dd59b4e.transcript.json
+
+# Local credentials and disposable editor/download files
+.envrc
+*.pem
+*.key
+*.pfx
+*.p12
+*.swp
+*.swo
+*~
+*.part
+*.crdownload
+*.tmp
