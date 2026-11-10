@@ -1,0 +1,436 @@
+{
+  "run_id": "v3_B_group_gemini_20261110T185016309372",
+  "version": "v3",
+  "artifact_version": "v3+pd2d3db4824a1+t5e5884105175",
+  "prompt_hash": "d2d3db4824a1782bc3e7b548184bbb4c4d91d49ea87c6989ed34d2068f8d4f1b",
+  "tools_hash": "5e58841051755aedd50cbe33bfa7f72f99dd2c6e727c4c65ba2dcb45901d55b5",
+  "phase": "B",
+  "suite": "group",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "system_prompt": "C:\\Users\\ASUS\\Desktop\\VINUNI\\K5-L3B-DAY03-E1110-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\ASUS\\Desktop\\VINUNI\\K5-L3B-DAY03-E1110-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do thành viên đóng góp kiểm tra tool mới github_search và các boundary hỏi lại / xác nhận.",
+  "generated_at": "2026-11-10T18:50:16",
+  "summary": {
+    "total_cases": 6,
+    "measured_cases": 3,
+    "provider_error_cases": 3,
+    "passed_cases": 2,
+    "case_accuracy": 0.6667,
+    "tool_routing_accuracy": 0.6667,
+    "argument_accuracy": 0.6667,
+    "multiturn_accuracy": null,
+    "failure_counts": {
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 1
+    }
+  },
+  "results": [
+    {
+      "id": "G01_github_search_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_github_search",
+        "difficulty": "medium",
+        "what_it_tests": "Tìm kiếm mã nguồn mở trên GitHub → route tới tool mới github_search với đúng query và sort=stars."
+      },
+      "input": "Tìm 5 repository GitHub nhiều sao nhất về agentic workflow",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "agentic workflow",
+              "sort": "stars",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "agentic workflow",
+              "sort": "stars",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "github_search",
+          "args": {
+            "query": "agentic workflow",
+            "sort": "stars",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_github_repos",
+            "query": "agentic workflow",
+            "sort": "stars",
+            "repositories": [
+              {
+                "name": "dify",
+                "full_name": "langgenius/dify",
+                "url": "https://github.com/langgenius/dify",
+                "description": "Build Agentic workflows, RAG pipelines, with rich AI model and tool support on one collaborative workspace. Deploy on cloud, VPC, or self-hosted, so teams move from prototype to production without rebuilding the stack.",
+                "stars": 160827,
+                "forks": 25436,
+                "language": "Python"
+              },
+              {
+                "name": "langflow",
+                "full_name": "langflow-ai/langflow",
+                "url": "https://github.com/langflow-ai/langflow",
+                "description": "Langflow is a powerful tool for building and deploying AI-powered agents and workflows.",
+                "stars": 156499,
+                "forks": 10377,
+                "language": "Python"
+              },
+              {
+                "name": "claude-code",
+                "full_name": "anthropics/claude-code",
+                "url": "https://github.com/anthropics/claude-code",
+                "description": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
+                "stars": 155155,
+                "forks": 24893,
+                "language": "TypeScript"
+              },
+              {
+                "name": "MinerU",
+                "full_name": "opendatalab/MinerU",
+                "url": "https://github.com/opendatalab/MinerU",
+                "description": "Transforms complex documents like PDFs and Office docs into LLM-ready markdown/JSON for your Agentic workflows.",
+                "stars": 83429,
+                "forks": 6922,
+                "language": "Python"
+              },
+              {
+                "name": "ruflo",
+                "full_name": "ruvnet/ruflo",
+                "url": "https://github.com/ruvnet/ruflo",
+                "description": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+                "stars": 81397,
+                "forks": 9581,
+                "language": "TypeScript"
+              }
+            ],
+            "total_count": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_github_search_library",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_github_search_library",
+        "difficulty": "easy",
+        "what_it_tests": "Tìm thư viện lập trình trên GitHub → phân biệt với tra cứu web thông thường (lookup)."
+      },
+      "input": "Tìm kiếm các repository GitHub về thư viện LlamaIndex",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "LlamaIndex"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "LlamaIndex"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "github_search",
+          "args": {
+            "query": "LlamaIndex"
+          },
+          "result": {
+            "tool": "search_github_repos",
+            "query": "LlamaIndex",
+            "sort": "stars",
+            "repositories": [
+              {
+                "name": "llama_index",
+                "full_name": "run-llama/llama_index",
+                "url": "https://github.com/run-llama/llama_index",
+                "description": "LlamaIndex is the document processing platform for AI",
+                "stars": 52867,
+                "forks": 8540,
+                "language": "Python"
+              },
+              {
+                "name": "agents-course",
+                "full_name": "huggingface/agents-course",
+                "url": "https://github.com/huggingface/agents-course",
+                "description": "This repository contains the Hugging Face Agents Course. ",
+                "stars": 34686,
+                "forks": 2488,
+                "language": "MDX"
+              },
+              {
+                "name": "phoenix",
+                "full_name": "Arize-ai/phoenix",
+                "url": "https://github.com/Arize-ai/phoenix",
+                "description": "AI Observability & Evaluation",
+                "stars": 12231,
+                "forks": 1283,
+                "language": "Python"
+              },
+              {
+                "name": "ipex-llm",
+                "full_name": "intel/ipex-llm",
+                "url": "https://github.com/intel/ipex-llm",
+                "description": "Accelerate local LLM inference and finetuning (LLaMA, Mistral, ChatGLM, Qwen, DeepSeek, Mixtral, Gemma, Phi, MiniCPM, Qwen-VL, MiniCPM-V, etc.) on Intel XPU (e.g., local PC with iGPU and NPU, discrete GPU such as Arc, Flex and Max); seamlessly integrate with llama.cpp, Ollama, HuggingFace, LangChain, LlamaIndex, vLLM, DeepSpeed, Axolotl, etc.",
+                "stars": 8841,
+                "forks": 1433,
+                "language": "Python"
+              },
+              {
+                "name": "rags",
+                "full_name": "run-llama/rags",
+                "url": "https://github.com/run-llama/rags",
+                "description": "Build ChatGPT over your data, all with natural language",
+                "stars": 6546,
+                "forks": 652,
+                "language": "Python"
+              }
+            ],
+            "total_count": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_confirmed_send_telegram",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Người dùng đã nêu rõ sự xác nhận → được phép gọi send với confirmed=true."
+      },
+      "input": "Tôi đã xác nhận nội dung ok, hãy gửi bản tin này lên Telegram ngay giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "options": [],
+              "question": "Bạn có chắc chắn muốn gửi nội dung bản tin này lên Telegram ngay bây giờ không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call send",
+          "extra tool call clarify"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "options": [],
+            "question": "Bạn có chắc chắn muốn gửi nội dung bản tin này lên Telegram ngay bây giờ không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có chắc chắn muốn gửi nội dung bản tin này lên Telegram ngay bây giờ không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "M_G01_clarify_then_github",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_github",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: lượt 1 thiếu query, các lượt sau bổ sung chủ đề và limit → gọi github_search đầy đủ."
+      },
+      "input": [
+        "Tìm giúp mình code repo mã nguồn mở trên GitHub nhé",
+        "Về chủ đề DeepSeek R1",
+        "Lấy 5 repo nhiều sao nhất nhé"
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "DeepSeek R1",
+              "sort": "stars",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "TypeError: string indices must be integers, not 'str'"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M_G02_github_sort_forks",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_github_params",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: cập nhật tham số sort=forks và limit=10 cho tool github_search."
+      },
+      "input": [
+        "Tìm repository GitHub về LangChain",
+        "Sắp xếp theo số lượt fork nhiều nhất",
+        "Lấy 10 repo nhé"
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "LangChain",
+              "sort": "forks",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "TypeError: string indices must be integers, not 'str'"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M_G03_multiturn_send_confirm",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_send_confirmation",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: nghiên cứu trước, lượt 2 hỏi xin xác nhận, lượt 3 user đã đồng ý → gọi send(confirmed=true)."
+      },
+      "input": [
+        "Tìm giúp mình repo GitHub về vllm",
+        "Đăng kết quả này lên Telegram channel của nhóm đi",
+        "Ừ, mình đồng ý gửi bản tin đó lên Telegram"
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "TypeError: string indices must be integers, not 'str'"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": []
+    }
+  ]
+}

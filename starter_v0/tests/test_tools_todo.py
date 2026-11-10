@@ -110,13 +110,46 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
 #   2. bad / missing input from the model (empty string, wrong type, out-of-enum value)
 #   3. failure path (missing key, HTTP error, timeout) -> returns error dict, does not raise
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+def test_my_new_tool_happy_path(fake_http) -> None:
+    calls = fake_http(FakeResponse({
+        "items": [
+            {
+                "name": "deepseek-llm",
+                "full_name": "deepseek-ai/deepseek-llm",
+                "html_url": "https://github.com/deepseek-ai/deepseek-llm",
+                "description": "DeepSeek LLM open source model",
+                "stargazers_count": 12500,
+                "forks_count": 1200,
+                "language": "Python",
+            }
+        ]
+    }))
+    result = TOOL_FUNCTIONS["github_search"](query="deepseek", sort="stars", limit=3)
+    assert len(calls) == 1
+    assert "api.github.com/search/repositories" in calls[0]["url"]
+    assert calls[0]["params"]["q"] == "deepseek"
+    assert calls[0]["params"]["sort"] == "stars"
+    assert result["total_count"] == 1
+    assert result["repositories"][0]["full_name"] == "deepseek-ai/deepseek-llm"
+    assert result["repositories"][0]["stars"] == 12500
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+def test_my_new_tool_bad_input_from_model(fake_http) -> None:
+    # 1. Empty query should return empty list gracefully without network call
+    res_empty = TOOL_FUNCTIONS["github_search"](query="", sort="invalid_sort", limit=-1)
+    assert res_empty["total_count"] == 0
+    assert res_empty["repositories"] == []
+
+    # 2. Out-of-enum sort falls back to 'stars', limit clamped
+    calls = fake_http(FakeResponse({"items": []}))
+    TOOL_FUNCTIONS["github_search"](query="langchain", sort="invalid_sort", limit=0)
+    assert calls[0]["params"]["sort"] == "stars"
+    assert calls[0]["params"]["per_page"] == 1
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_my_new_tool_failure_returns_error_dict(fake_http) -> None:
+    fake_http(FakeResponse({"message": "API rate limit exceeded"}, status_code=403))
+    result = TOOL_FUNCTIONS["github_search"](query="pytorch")
+    assert result["tool"] == "search_github_repos"
+    assert "error" in result
+    assert "message" in result

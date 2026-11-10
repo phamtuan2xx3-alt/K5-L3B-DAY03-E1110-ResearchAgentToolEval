@@ -1,7 +1,165 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Case do thành viên đóng góp kiểm tra tool mới github_search và các boundary hỏi lại / xác nhận.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_github_search_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm 5 repository GitHub nhiều sao nhất về agentic workflow",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "agentic workflow",
+              "sort": "stars",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_github_search",
+        "difficulty": "medium",
+        "what_it_tests": "Tìm kiếm mã nguồn mở trên GitHub → route tới tool mới github_search với đúng query và sort=stars."
+      }
+    },
+    {
+      "id": "G02_github_search_library",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm kiếm các repository GitHub về thư viện LlamaIndex",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "LlamaIndex"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_github_search_library",
+        "difficulty": "easy",
+        "what_it_tests": "Tìm thư viện lập trình trên GitHub → phân biệt với tra cứu web thông thường (lookup)."
+      }
+    },
+    {
+      "id": "G03_confirmed_send_telegram",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tôi đã xác nhận nội dung ok: 'Bản tin công nghệ tuần này đã hoàn thành', hãy gửi lên Telegram ngay giúp mình",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Người dùng đã nêu rõ sự xác nhận kèm nội dung → được phép gọi send với confirmed=true."
+      }
+    },
+    {
+      "id": "M_G01_clarify_then_github",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm giúp mình code repo mã nguồn mở trên GitHub nhé"},
+        {"role": "user", "content": "Về chủ đề DeepSeek R1"},
+        {"role": "user", "content": "Lấy 5 repo nhiều sao nhất nhé"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "DeepSeek R1",
+              "sort": "stars",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_clarify_github",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: lượt 1 thiếu query, các lượt sau bổ sung chủ đề và limit → gọi github_search đầy đủ."
+      }
+    },
+    {
+      "id": "M_G02_github_sort_forks",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm repository GitHub về LangChain"},
+        {"role": "user", "content": "Sắp xếp theo số lượt fork nhiều nhất"},
+        {"role": "user", "content": "Lấy 10 repo nhé"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github_search",
+            "args": {
+              "query": "LangChain",
+              "sort": "forks",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_github_params",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: cập nhật tham số sort=forks và limit=10 cho tool github_search."
+      }
+    },
+    {
+      "id": "M_G03_multiturn_send_confirm",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm giúp mình repo GitHub về vllm"},
+        {"role": "user", "content": "Đăng kết quả này lên Telegram channel của nhóm đi"},
+        {"role": "user", "content": "Tôi đã xác nhận nội dung ok rồi, hãy gửi bản tin đó lên Telegram nhé"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_send_confirmation",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: nghiên cứu trước, lượt 2 hỏi xin xác nhận, lượt 3 user đã đồng ý → gọi send(confirmed=true)."
+      }
+    }
+  ]
 }
