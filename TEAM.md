@@ -29,7 +29,7 @@ Mỗi người phụ trách ba đầu việc, khối lượng dự kiến khoả
 
 ## Minh chứng và báo cáo cá nhân
 
-Có Codex hỗ trợ triển khai và tổng hợp. Mỗi thành viên tự kiểm tra phần phụ trách và cập nhật đóng góp thực tế; phân công mới không xác nhận thay cho lịch sử commit. Minh chứng dùng thử ngoài nhóm hiện là MOCK, chưa được tính là phiên thật.
+Có Codex hỗ trợ triển khai và tổng hợp. Mỗi thành viên tự kiểm tra phần phụ trách và cập nhật đóng góp thực tế; phân công mới không xác nhận thay cho lịch sử commit.
 
 - [Phạm Quang Tuấn — 2A202603824](report/team/2A202603824_PhamQuangTuan.md)
 - [Trần Phạm Minh Sơn — 2A202603802](report/team/2A202603802_TranPhamMinhSon.md)
