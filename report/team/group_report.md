@@ -244,8 +244,7 @@ Bản nộp dùng mã và minh chứng main của nhóm trưởng. Chia năm ph�
 | Nguyễn Phan Tuấn Đức | 2A202603818 | UI và Telegram; Hướng dẫn demo, transcript và receipt Telegram                          | Thanh         |
 | Đỗ Minh Thanh        | 2A202603793 | Local model và tài liệu minh chứng; Bảng local metrics, hướng dẫn và chỉ mục minh chứng | Tuấn          |
 
-Chi tiết ba đầu việc mỗi người và liên kết báo cáo cá nhân tại [TEAM.md](../../TEAM.md). Báo cáo nhập từ nhánh thành viên giữ nội dung lịch sử có ghi nguồn; không dùng để thay số đo main. Có Codex hỗ trợ, thành viên cần tự rà soát và giải thích phần phụ trách. Minh chứng dùng thử ngoài nhóm vẫn là MOCK.
-
+Chi tiết ba đầu việc mỗi người và liên kết báo cáo cá nhân tại [TEAM.md](../../TEAM.md). Báo cáo nhập từ nhánh thành viên giữ nội dung lịch sử có ghi nguồn; không dùng để thay số đo main.
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
 - **Prompt:** v1 cải thiện hỏi lại/xác nhận; v2 giúp routing đạt 100%. **Tool declaration:** v3 cải thiện convention arguments, đặc biệt query và response_type.
