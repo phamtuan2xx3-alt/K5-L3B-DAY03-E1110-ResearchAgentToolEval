@@ -8,7 +8,7 @@
 - URL repo, nhánh nộp, commit chốt:
   - https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval
   - nhánh: `lab/day03-e1110`
-  - commit chốt: _(điền khi nộp)_
+  - commit chốt: `cd54623` (local trên `lab/day03-e1110`; cần owner push vì account hiện tại bị 403)
 
 ## Thành viên
 

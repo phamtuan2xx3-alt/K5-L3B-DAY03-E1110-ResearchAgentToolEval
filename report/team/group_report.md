@@ -29,7 +29,7 @@ Dependency: `streamlit` trong `starter_v0/requirements.txt`.
 
 **Link dùng thử (deploy):**
 
-> URL: _(chạy local + Cloudflare Tunnel khi demo; cập nhật khi mở tunnel)_
+> URL: local `http://localhost:8501` (`streamlit run app.py`); khi demo mở thêm `cloudflared tunnel --url http://localhost:8501` và dán link `*.trycloudflare.com` vào đây.
 
 ### A2. Tool agent có
 
