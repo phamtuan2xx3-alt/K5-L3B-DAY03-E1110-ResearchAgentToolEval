@@ -2,37 +2,63 @@
 
 - Lớp: L3B.
 - Repo: https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval
-- Bản sử dụng: main của nhóm trưởng và working tree hiện tại; chưa chốt commit nộp.
-- Mã và số đo của bản nộp lấy từ main. Báo cáo cá nhân nhập từ nhánh thành viên được giữ như tài liệu nguồn, không thay thế kết quả main.
+- Bản nhóm sử dụng: main. Minh chứng cá nhân dẫn tới nhánh riêng; không gộp số đo khác artifact vào kết quả nhóm.
 
-## Thành viên
+## Thành viên và phân công
 
-| Họ tên | MSSV | Vai trò |
-|---|---|---|
-| Phạm Quang Tuấn | 2A202603824 | Nhóm trưởng, provider và đóng gói |
-| Trần Phạm Minh Sơn | 2A202603802 | Tool và kiểm thử |
-| Huỳnh Văn Cường | 2A202603866 | Prompt và đánh giá |
-| Nguyễn Phan Tuấn Đức | 2A202603818 | UI và Telegram |
-| Đỗ Minh Thanh | 2A202603793 | Local model và tài liệu minh chứng |
+Phân công theo nội dung báo cáo cá nhân; các thành viên có thể cùng phụ trách setup, prompt/tool, eval, UI và test trên nhánh riêng. Không ép chia phần không trùng hoặc quy đổi số đầu việc thành tỷ lệ đóng góp. Phạm Quang Tuấn phụ trách thực hiện Small Local Model Challenge của nhóm trên main.
 
-## Phân công
+| Thành viên | MSSV | Vai trò | Nhánh minh chứng | Kiểm tra chéo |
+|---|---|---|---|---|
+| Phạm Quang Tuấn | 2A202603824 | Nhóm trưởng, provider và bonus local | [main](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/main/) | Tuấn Đức |
+| Trần Phạm Minh Sơn | 2A202603802 | Prompt, github_search và unit test | [feature/sontpm](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/feature%2Fsontpm/) | Cường |
+| Huỳnh Văn Cường | 2A202603866 | Prompt, cite và eval nhóm | [lab/day03-e1110](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/) | Sơn |
+| Nguyễn Phan Tuấn Đức | 2A202603818 | Prompt, source_dedupe, UI và Telegram | [tuanduc](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/tuanduc/) | Thanh |
+| Đỗ Minh Thanh | 2A202603793 | Prompt, bốn tool xử lý nguồn và chat session | [DoMinhThanh](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/) | Tuấn |
 
-Mỗi người phụ trách ba đầu việc, khối lượng dự kiến khoảng 20%. Đây là phân công rà soát và hoàn thiện, không phải tỷ lệ đóng góp đã hoàn thành. Các công việc thực hiện trên bản main hiện tại.
+## Đầu việc và báo cáo cá nhân
 
-| Thành viên | Phần việc | Đầu ra | Kiểm tra chéo |
-|---|---|---|---|
-| Phạm Quang Tuấn | Rà soát Gemini 3.5 Flash Lite, queue RPM 15 và retry. Quản lý cấu hình, kiểm tra bảo mật key và môi trường chạy. Tổng hợp nghiệm thu, chốt commit/push và bản nộp. | Cấu hình, log provider và checklist bản nộp | Tuấn Đức |
-| Trần Phạm Minh Sơn | Rà soát source_audit và contract đầu vào/đầu ra trên main. Kiểm tra unit test, trường hợp lỗi và test hồi quy. Đối chiếu kết quả social_search sau subscription với minh chứng API thật. | Tool contract, kết quả test và log API | Cường |
-| Huỳnh Văn Cường | Rà soát prompt/tools v0–v3, snapshot/hash và version log. Phân tích các case FAIL và đối chiếu metric trước/sau. Kiểm tra eval nhóm đủ 5 single và 5 multi, liên kết run đúng artifact. | Bảng metric, phân tích lỗi và eval nhóm | Sơn |
-| Nguyễn Phan Tuấn Đức | Rà soát UI Streamlit, hướng dẫn truy cập và transcript CLI/UI. Kiểm tra flow duyệt Telegram, receipt và chống gửi khi chưa xác nhận. Rà soát tài liệu dùng thử ngoài nhóm; giữ nhãn MOCK đến khi có phiên thật. | Hướng dẫn demo, transcript và receipt Telegram | Thanh |
-| Đỗ Minh Thanh | Rà soát hai model local, lệnh chạy và hướng dẫn cleanup. Đối chiếu hai vòng tối ưu local và kiểm tra ngược Gemini, ghi đúng kết quả giảm/tăng. Kiểm tra liên kết group report, chỉ mục minh chứng và định dạng hồ sơ cá nhân. | Bảng local metrics, hướng dẫn và chỉ mục minh chứng | Tuấn |
+### Phạm Quang Tuấn — 2A202603824
 
-## Minh chứng và báo cáo cá nhân
+- Điều phối, tích hợp main, cấu hình Gemini 3.5 Flash Lite và queue/retry; kiểm tra API social_search.
+- Thực hiện baseline, tối ưu prompt/tool, source_audit và kiểm thử trên main; tổng hợp kết quả nhóm.
+- Trực tiếp tải và chạy hai model local Qwen2.5:3B, Llama3.2:1B; chạy base eval, hai vòng tối ưu local và kiểm tra ngược Gemini.
+- Phụ trách minh chứng bonus local và private channel Telegram của main, rà soát bản nộp.
 
-Có Codex hỗ trợ triển khai và tổng hợp. Mỗi thành viên tự kiểm tra phần phụ trách và cập nhật đóng góp thực tế; phân công mới không xác nhận thay cho lịch sử commit.
+[Báo cáo cá nhân](report/team/2A202603824_PhamQuangTuan.md).
 
-- [Phạm Quang Tuấn — 2A202603824](report/team/2A202603824_PhamQuangTuan.md)
-- [Trần Phạm Minh Sơn — 2A202603802](report/team/2A202603802_TranPhamMinhSon.md)
-- [Huỳnh Văn Cường — 2A202603866](report/team/2A202603866_HuynhVanCuong.md)
-- [Nguyễn Phan Tuấn Đức — 2A202603818](report/team/2A202603818_NguyenPhanTuanDuc.md)
-- [Đỗ Minh Thanh — 2A202603793](report/team/2A202603793_DoMinhThanh.md)
+### Trần Phạm Minh Sơn — 2A202603802
+
+- Thiết lập và kiểm tra Gemini; phân tích baseline và tối ưu prompt/tool declaration v0–v3 trên nhánh cá nhân.
+- Xây dựng github_search, đăng ký contract/schema và viết unit test.
+- Xây dựng và chạy group eval 6 case, kiểm tra boundary gửi; lưu run/hash và phân tích lỗi trên nhánh.
+
+[Báo cáo cá nhân](report/team/2A202603802_TranPhamMinhSon.md).
+
+### Huỳnh Văn Cường — 2A202603866
+
+- Thiết lập baseline và tối ưu prompt/tool declaration v0–v3; phân tích routing/arguments trên nhánh cá nhân.
+- Xây dựng cite và unit test, bộ eval nhóm 10 case.
+- Triển khai UI, thu transcript research/thiếu thông tin/xác nhận gửi và tổng hợp báo cáo của nhánh.
+
+[Báo cáo cá nhân](report/team/2A202603866_HuynhVanCuong.md).
+
+### Nguyễn Phan Tuấn Đức — 2A202603818
+
+- Tối ưu system prompt/tool declaration và đối chiếu các run trên nhánh cá nhân.
+- Xây dựng source_dedupe, unit test và test boundary gửi Telegram.
+- Tích hợp UI Streamlit, chạy eval nhóm, thu transcript và kiểm tra Telegram; hỗ trợ rà soát demo nhóm.
+
+[Báo cáo cá nhân](report/team/2A202603818_NguyenPhanTuanDuc.md).
+
+### Đỗ Minh Thanh — 2A202603793
+
+- Thiết lập Gemini/API tool, baseline và tối ưu v0–v5; đối chiếu hash, đối chứng 14 tool và phân tích lỗi trên nhánh cá nhân.
+- Xây dựng deduplicate_sources, check_citations, compare_papers, rank_sources và unit test; bộ eval nhóm 10 case.
+- Triển khai UI/chat session, kiểm tra citation, che credential và boundary gửi; thu transcript/receipt Telegram và tổng hợp báo cáo của nhánh.
+
+[Báo cáo cá nhân](report/team/2A202603793_DoMinhThanh.md).
+
+## Quy ước minh chứng
+
+Run, test và transcript cá nhân được đối chiếu trên đúng nhánh nêu trong báo cáo. Nhánh cá nhân có thể có tool, số test hoặc metric khác main; việc dẫn liên kết không xác nhận mã đã merge. Có sử dụng AI hỗ trợ theo khai báo của từng thành viên.

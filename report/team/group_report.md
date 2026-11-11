@@ -36,7 +36,7 @@ Provider mặc định dùng **Gemini 3.5 Flash Lite** và đọc `GEMINI_API_KE
 
 ### A2. Công cụ có trong dự án
 
-Agent có 11 tool: 10 tool từ starter và source_audit do nhóm bổ sung ở CP3.
+Agent hiện có 15 tool: 10 tool từ starter, source_audit ở CP3 và 4 tool tích hợp từ nhánh Đỗ Minh Thanh. Các run cũ dùng snapshot tương ứng, không mặc định là kết quả của bộ 15 tool.
 
 | Tool                     | Chức năng                                                                  |
 | ------------------------ | -------------------------------------------------------------------------- |
@@ -51,6 +51,10 @@ Agent có 11 tool: 10 tool từ starter và source_audit do nhóm bổ sung ở 
 | `papers`                 | Tìm paper trên arXiv                                                       |
 | `paper_text`             | Tải PDF arXiv và trích xuất văn bản                                        |
 | `source_audit` **(mới)** | Rà metadata nguồn, URL thiếu/sai/trùng và thiếu tiêu đề/ngày; chạy offline |
+| `deduplicate_sources` **(mới)** | Loại URL nguồn trùng và tracking, giữ nguồn đầu tiên |
+| `check_citations` **(mới)** | Kiểm tra ID trích dẫn trong draft với nguồn cung cấp; không fact-check |
+| `compare_papers` **(mới)** | Tạo bảng so sánh từ metadata paper được cung cấp |
+| `rank_sources` **(mới)** | Xếp hạng heuristic theo query, độ mới và domain ưu tiên |
 
 Khai báo và registry: [tools.yaml](../../starter_v0/artifacts/tools.yaml), [tools/**init**.py](../../starter_v0/tools/__init__.py).
 
@@ -152,7 +156,7 @@ G09 có tool social_search trả HTTPError dù routing/args PASS; cần xử lý
 | 3    | Bổ sung URL và chỉ đọc đúng link đó                 | fetch        | Đọc URL, tóm tắt và dẫn nguồn từ tool result                          |
 | 4    | Chuẩn bị đăng một nội dung cụ thể, yêu cầu chưa gửi | clarify      | Hỏi xác nhận đúng nội dung; chưa gọi send                             |
 
-UI lưu transcript, cho tải JSON, hiển thị kết quả và lỗi tool. Lớp thực thi UI chặn model tự gửi dù model đặt confirmed=true; cần người dùng bấm duyệt nội dung/kênh. Các hành vi hủy, chống gửi lặp và đổi kênh được test bằng mock. Sau 4 lượt QA ban đầu đã chạy thêm flow gửi Telegram thật; biên nhận/transcript ở B5. Public URL đã trả HTTP 200 và browser hiển thị màn hình nhập mã. AppTest kiểm tra chặn chưa đăng nhập, từ chối mã sai và mở chat với mã đúng. Chưa có xác nhận một người ngoài nhóm trực tiếp dùng thử; cần nhóm khác mở link và nhập mã để kiểm tra cuối.
+UI lưu transcript, cho tải JSON, hiển thị kết quả và lỗi tool. Lớp thực thi UI chặn model tự gửi dù model đặt confirmed=true; cần người dùng bấm duyệt nội dung/kênh. Các hành vi hủy, chống gửi lặp và đổi kênh được test bằng mock. Sau 4 lượt QA ban đầu đã chạy thêm flow gửi Telegram thật; biên nhận/transcript ở B5. Public URL đã trả HTTP 200 và browser hiển thị màn hình nhập mã. AppTest kiểm tra chặn chưa đăng nhập, từ chối mã sai và mở chat với mã đúng.
 
 **Bổ sung kiểm tra CLI theo đúng README:** đã chạy `python chat.py --provider gemini --model gemini-3.5-flash-lite --version cp5-cli` với 3 lượt thật (audit nguồn → hỏi URL → đọc URL được bổ sung), exit code 0, không provider_error. Đây là scripted QA, không phải lời xác nhận của người ngoài nhóm. [Transcript](../../starter_v0/transcripts/cp5-cli_gemini_20261110T195651906996.transcript.json), [log stdout/stderr](../../starter_v0/analysis/cp5_cli_live.log), [metadata](../../starter_v0/analysis/cp5_cli_live.json).
 
@@ -234,17 +238,18 @@ Bằng chứng: [CSV metric](../../starter_v0/analysis/bonus/local_metrics.csv),
 
 ## 6. Tổng hợp đóng góp và phân công
 
-Bản nộp dùng mã và minh chứng main của nhóm trưởng. Chia năm phần có khối lượng dự kiến tương đương (khoảng 20% mỗi người); đây là phân công phụ trách, không xác nhận đóng góp đã hoàn thành.
+Bản nhóm tiếp tục sử dụng mã và số đo main. Phân công dựa trên báo cáo cá nhân, cho phép trùng phần setup, prompt/tool, eval, UI và test giữa các nhánh. Phạm Quang Tuấn trực tiếp phụ trách tải/chạy hai model local, hai vòng tối ưu và kiểm tra ngược Gemini; minh chứng Small Local Model Challenge lấy từ main. Minh chứng cá nhân khác dẫn tới nhánh riêng, không trộn metric hoặc coi tool cá nhân là đã tích hợp.
 
-| Thành viên           | MSSV        | Phụ trách                                                                               | Kiểm tra chéo |
-| -------------------- | ----------- | --------------------------------------------------------------------------------------- | ------------- |
-| Phạm Quang Tuấn      | 2A202603824 | Nhóm trưởng, provider và đóng gói; Cấu hình, log provider và checklist bản nộp          | Tuấn Đức      |
-| Trần Phạm Minh Sơn   | 2A202603802 | Tool và kiểm thử; Tool contract, kết quả test và log API                                | Cường         |
-| Huỳnh Văn Cường      | 2A202603866 | Prompt và đánh giá; Bảng metric, phân tích lỗi và eval nhóm                             | Sơn           |
-| Nguyễn Phan Tuấn Đức | 2A202603818 | UI và Telegram; Hướng dẫn demo, transcript và receipt Telegram                          | Thanh         |
-| Đỗ Minh Thanh        | 2A202603793 | Local model và tài liệu minh chứng; Bảng local metrics, hướng dẫn và chỉ mục minh chứng | Tuấn          |
+| Thành viên | MSSV | Phụ trách | Minh chứng cá nhân | Kiểm tra chéo |
+|---|---|---|---|---|
+| Phạm Quang Tuấn | 2A202603824 | Nhóm trưởng, provider và bonus local | [Báo cáo](2A202603824_PhamQuangTuan.md), [nhánh main](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/main/) | Tuấn Đức |
+| Trần Phạm Minh Sơn | 2A202603802 | Prompt, github_search và unit test | [Báo cáo](2A202603802_TranPhamMinhSon.md), [nhánh feature/sontpm](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/feature%2Fsontpm/) | Cường |
+| Huỳnh Văn Cường | 2A202603866 | Prompt, cite và eval nhóm | [Báo cáo](2A202603866_HuynhVanCuong.md), [nhánh lab/day03-e1110](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/) | Sơn |
+| Nguyễn Phan Tuấn Đức | 2A202603818 | Prompt, source_dedupe, UI và Telegram | [Báo cáo](2A202603818_NguyenPhanTuanDuc.md), [nhánh tuanduc](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/tuanduc/) | Thanh |
+| Đỗ Minh Thanh | 2A202603793 | Prompt, bốn tool xử lý nguồn và chat session | [Báo cáo](2A202603793_DoMinhThanh.md), [nhánh DoMinhThanh](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/) | Tuấn |
 
-Chi tiết ba đầu việc mỗi người và liên kết báo cáo cá nhân tại [TEAM.md](../../TEAM.md). Báo cáo nhập từ nhánh thành viên giữ nội dung lịch sử có ghi nguồn; không dùng để thay số đo main.
+Chi tiết đầu việc tại [TEAM.md](../../TEAM.md) và mục 2 mỗi báo cáo cá nhân. Nội dung lịch sử và kết quả trên nhánh riêng được giữ để đối chiếu; phân công không thay thế bằng chứng commit/run.
+
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
 - **Prompt:** v1 cải thiện hỏi lại/xác nhận; v2 giúp routing đạt 100%. **Tool declaration:** v3 cải thiện convention arguments, đặc biệt query và response_type.
@@ -274,3 +279,12 @@ Chi tiết ba đầu việc mỗi người và liên kết báo cáo cá nhân t
 ## Cập nhật social_search sau đăng ký API
 
 Đã gọi trực tiếp social_search với query OpenAI, search_type Latest, limit 2 sau khi đăng ký Twitter API45: trả về hai bài có URL, không còn lỗi 403 trong lượt kiểm tra này. [Minh chứng API thật](../../starter_v0/analysis/social_search_after_subscription.json). Lỗi 403 trước đó giữ lại như lịch sử; không còn là việc đang chờ xử lý. Đây là kiểm tra trực tiếp tool, không phải chạy lại toàn bộ eval hoặc flow agent.
+
+### B5b. Tích hợp bốn tool từ nhánh Đỗ Minh Thanh
+
+Đã đưa deduplicate_sources, check_citations, compare_papers và rank_sources cùng helper vào main; giữ source_audit, tổng cộng 5 tool mới so với starter. Code gốc từ nhánh DoMinhThanh, commit nguồn và kết quả kiểm tra ghi trong [integration manifest](../../starter_v0/analysis/four_tools_integration.json).
+
+- Bộ test nhập cho bốn tool: 46 test. Toàn bộ suite sau tích hợp: **171 passed, 14 skipped, 0 failed**.
+- Kiểm tra routing thật bằng Gemini 3.5 Flash Lite: **4/4**, đủ case, không lỗi provider; [run JSON](../../starter_v0/runs/main-four-tools_B_group_gemini_20261111T104511986590.json), [bộ kiểm tra bổ sung](../../starter_v0/data/eval_four_tools.json).
+- Bốn case bổ sung kiểm tra tên tool, không yêu cầu khớp args chi tiết; hành vi dữ liệu được kiểm tra bằng unit test. Không dùng 4/4 để thay thế suite CP4 10 case hoặc kết quả base.
+- Snapshot mới: main-four-tools. Các số đo CP2/CP4 và bonus local trước đó vẫn thuộc snapshot cũ, chưa chạy lại với bộ 15 tool hiện tại.

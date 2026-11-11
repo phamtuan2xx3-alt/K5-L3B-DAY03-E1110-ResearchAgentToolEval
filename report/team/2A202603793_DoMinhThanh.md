@@ -11,7 +11,11 @@
 
 ## 2. Phần việc phụ trách
 
-Phụ trách toàn bộ quy trình bài lab từ CP1 đến CP5: thiết lập provider và API tool, đo baseline, tối ưu prompt và tool declaration, bổ sung tool mới cùng unit test, xây dựng eval nhóm, tổ chức chạy thử, hoàn thiện UI và tổng hợp báo cáo. Quá trình thực hiện sử dụng Codex/ChatGPT để hỗ trợ giải thích, đề xuất, triển khai và kiểm tra các sản phẩm theo yêu cầu.
+- Thiết lập Gemini/API tool, baseline và tối ưu v0–v5; đối chiếu hash, đối chứng 14 tool và phân tích lỗi trên nhánh cá nhân.
+- Xây dựng deduplicate_sources, check_citations, compare_papers, rank_sources và unit test; bộ eval nhóm 10 case.
+- Triển khai UI/chat session, kiểm tra citation, che credential và boundary gửi; thu transcript/receipt Telegram và tổng hợp báo cáo của nhánh.
+
+Người kiểm tra chéo: Tuấn. Phạm vi theo báo cáo cá nhân; kết quả và minh chứng giữ đúng nhánh nguồn. Phần chạy model local của nhóm do Phạm Quang Tuấn thực hiện trên main.
 
 ## 3. Đóng góp cụ thể
 
@@ -26,32 +30,34 @@ Phụ trách toàn bộ quy trình bài lab từ CP1 đến CP5: thiết lập p
 
 ## 4. Bằng chứng
 
+**Nguồn minh chứng cá nhân:** [nhánh DoMinhThanh](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/), [báo cáo gốc](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/report/team/2A202603793_DoMinhThanh.md). Các URL bên dưới trỏ tới nhánh cá nhân; số liệu ở đó không thay thế kết quả main trong báo cáo nhóm.
+
 ### File và kết quả thực hiện
 
 | Nội dung | File bằng chứng |
 |---|---|
-| Prompt và tool declaration | [system_prompt.md](../../starter_v0/artifacts/system_prompt.md), [tools.yaml](../../starter_v0/artifacts/tools.yaml) |
-| Lịch sử giả thuyết, metric và hash | [version_log.csv](../../starter_v0/artifacts/version_log.csv) |
-| Baseline v0 — 13/20 | [Run v0](../../starter_v0/runs/v0_B_base_gemini_20261110T183632505620.json) |
-| v1 — 15/20 | [Run v1](../../starter_v0/runs/v1_B_base_gemini_20261110T192455812815.json) |
-| v2 — 17/20 | [Run v2](../../starter_v0/runs/v2_B_base_gemini_20261110T192913379384.json) |
-| v3 — 18/20 | [Run v3](../../starter_v0/runs/v3_B_base_gemini_20261110T193212164707.json) |
-| Đối chứng 14 tool — 17/20 | [Run v3-cp3](../../starter_v0/runs/v3-cp3_B_base_gemini_20261111T010319101559.json) |
-| v4 — 19/20 | [Run v4](../../starter_v0/runs/v4_B_base_gemini_20261111T010552889357.json) |
-| v5 — 18/20 | [Run v5](../../starter_v0/runs/v5_B_base_gemini_20261111T010040350391.json) |
-| Hoàn thiện C2 và regression test send | [c2_verification.json](../../starter_v0/analysis/c2_verification.json), [send/tool.py](../../starter_v0/tools/send/tool.py) |
-| Tool loại nguồn trùng | [deduplicate_sources/tool.py](../../starter_v0/tools/deduplicate_sources/tool.py), [TOOL.md](../../starter_v0/tools/deduplicate_sources/TOOL.md) |
-| Tool kiểm tra mã trích dẫn | [check_citations/tool.py](../../starter_v0/tools/check_citations/tool.py), [TOOL.md](../../starter_v0/tools/check_citations/TOOL.md) |
-| Tool so sánh paper | [compare_papers/tool.py](../../starter_v0/tools/compare_papers/tool.py), [TOOL.md](../../starter_v0/tools/compare_papers/TOOL.md) |
-| Tool xếp hạng nguồn | [rank_sources/tool.py](../../starter_v0/tools/rank_sources/tool.py), [TOOL.md](../../starter_v0/tools/rank_sources/TOOL.md) |
-| Unit test và kiểm tra phiên chat | [test_tools_todo.py](../../starter_v0/tests/test_tools_todo.py), [test_chat_session.py](../../starter_v0/tests/test_chat_session.py) |
-| Bộ eval nhóm và run 10/10 | [eval_group.json](../../starter_v0/data/eval_group.json), [Run group](../../starter_v0/runs/v5_B_group_gemini_20261111T010751051163.json) |
-| UI và backend phiên chat | [app.py](../../starter_v0/app.py), [web_chat.py](../../starter_v0/web_chat.py) |
-| Chat CLI với Gemini thật | [CLI transcript](../../starter_v0/transcripts/v3_gemini_20261111T000642591554.transcript.json) |
-| Phiên UI với Gemini thật | [UI transcript](../../starter_v0/transcripts/ui_v3_gemini_20261111T001107859594_68dcd91e.transcript.json) |
-| Kiểm tra UI, public link và toàn suite | [cp5_verification.json](../../starter_v0/analysis/cp5_verification.json) |
-| Telegram gửi thật sau xác nhận | [Telegram transcript](../../starter_v0/transcripts/v5_gemini_20261111T011317669763.transcript.json), [receipt message_id=5](../../starter_v0/analysis/telegram_delivery.json) |
-| Báo cáo tổng hợp | [group_report.md](group_report.md) |
+| Prompt và tool declaration | [system_prompt.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/artifacts/system_prompt.md), [tools.yaml](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/artifacts/tools.yaml) |
+| Lịch sử giả thuyết, metric và hash | [version_log.csv](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/artifacts/version_log.csv) |
+| Baseline v0 — 13/20 | [Run v0](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v0_B_base_gemini_20261110T183632505620.json) |
+| v1 — 15/20 | [Run v1](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v1_B_base_gemini_20261110T192455812815.json) |
+| v2 — 17/20 | [Run v2](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v2_B_base_gemini_20261110T192913379384.json) |
+| v3 — 18/20 | [Run v3](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v3_B_base_gemini_20261110T193212164707.json) |
+| Đối chứng 14 tool — 17/20 | [Run v3-cp3](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v3-cp3_B_base_gemini_20261111T010319101559.json) |
+| v4 — 19/20 | [Run v4](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v4_B_base_gemini_20261111T010552889357.json) |
+| v5 — 18/20 | [Run v5](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v5_B_base_gemini_20261111T010040350391.json) |
+| Hoàn thiện C2 và regression test send | [c2_verification.json](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/analysis/c2_verification.json), [send/tool.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/send/tool.py) |
+| Tool loại nguồn trùng | [deduplicate_sources/tool.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/deduplicate_sources/tool.py), [TOOL.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/deduplicate_sources/TOOL.md) |
+| Tool kiểm tra mã trích dẫn | [check_citations/tool.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/check_citations/tool.py), [TOOL.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/check_citations/TOOL.md) |
+| Tool so sánh paper | [compare_papers/tool.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/compare_papers/tool.py), [TOOL.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/compare_papers/TOOL.md) |
+| Tool xếp hạng nguồn | [rank_sources/tool.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/rank_sources/tool.py), [TOOL.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tools/rank_sources/TOOL.md) |
+| Unit test và kiểm tra phiên chat | [test_tools_todo.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tests/test_tools_todo.py), [test_chat_session.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/tests/test_chat_session.py) |
+| Bộ eval nhóm và run 10/10 | [eval_group.json](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/data/eval_group.json), [Run group](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/runs/v5_B_group_gemini_20261111T010751051163.json) |
+| UI và backend phiên chat | [app.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/app.py), [web_chat.py](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/web_chat.py) |
+| Chat CLI với Gemini thật | [CLI transcript](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/transcripts/v3_gemini_20261111T000642591554.transcript.json) |
+| Phiên UI với Gemini thật | [UI transcript](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/transcripts/ui_v3_gemini_20261111T001107859594_68dcd91e.transcript.json) |
+| Kiểm tra UI, public link và toàn suite | [cp5_verification.json](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/analysis/cp5_verification.json) |
+| Telegram gửi thật sau xác nhận | [Telegram transcript](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/transcripts/v5_gemini_20261111T011317669763.transcript.json), [receipt message_id=5](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/starter_v0/analysis/telegram_delivery.json) |
+| Báo cáo tổng hợp | [group_report.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/DoMinhThanh/report/team/group_report.md) |
 
 ### AI/công cụ đã dùng và cách kiểm tra kết quả
 
@@ -60,6 +66,9 @@ Phụ trách toàn bộ quy trình bài lab từ CP1 đến CP5: thiết lập p
 - pytest và Streamlit AppTest: kiểm tra contract, xử lý dữ liệu tool, phiên chat độc lập, redaction, allowlist và giao diện.
 - Streamlit và Cloudflare Tunnel: chạy UI local, tạo link dùng thử và kiểm tra HTTP/health.
 - Kết quả được đối chiếu bằng run JSON, transcript, số test thực tế và hash artifacts. Mỗi run dùng làm bằng chứng đều được kiểm tra số case đã đo và lỗi provider; số liệu báo cáo lấy từ log đã lưu.
+
+
+Minh chứng theo nhánh: [artifacts](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/starter_v0/artifacts), [tools](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/starter_v0/tools), [tests](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/starter_v0/tests), [data](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/starter_v0/data), [runs](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/starter_v0/runs), [transcripts](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/DoMinhThanh/starter_v0/transcripts).
 
 ## 5. Tự đánh giá
 

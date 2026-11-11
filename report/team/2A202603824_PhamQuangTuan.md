@@ -9,13 +9,12 @@
 
 ## 2. Phần việc phụ trách
 
-Phân công cập nhật theo TEAM.md cho bản main hiện tại:
+- Điều phối, tích hợp main, cấu hình Gemini 3.5 Flash Lite và queue/retry; kiểm tra API social_search.
+- Thực hiện baseline, tối ưu prompt/tool, source_audit và kiểm thử trên main; tổng hợp kết quả nhóm.
+- Trực tiếp tải và chạy hai model local Qwen2.5:3B, Llama3.2:1B; chạy base eval, hai vòng tối ưu local và kiểm tra ngược Gemini.
+- Phụ trách minh chứng bonus local và private channel Telegram của main, rà soát bản nộp.
 
-- Rà soát Gemini 3.5 Flash Lite, queue RPM 15 và retry.
-- Quản lý cấu hình, kiểm tra bảo mật key và môi trường chạy.
-- Tổng hợp nghiệm thu, chốt commit/push và bản nộp.
-
-Đầu ra: Cấu hình, log provider và checklist bản nộp. Người kiểm tra chéo: Tuấn Đức. Đây là trách nhiệm được giao, không phải xác nhận các đầu việc đã hoàn tất.
+Người kiểm tra chéo: Tuấn Đức. Phạm vi theo báo cáo cá nhân; kết quả và minh chứng giữ đúng nhánh nguồn. Phần chạy model local của nhóm do Phạm Quang Tuấn thực hiện trên main.
 
 ## 3. Công việc và kết quả
 

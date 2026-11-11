@@ -8,17 +8,14 @@
 
 ## 2. Phần việc phụ trách
 
-Phân công cập nhật theo TEAM.md cho bản main hiện tại:
+- Thiết lập baseline và tối ưu prompt/tool declaration v0–v3; phân tích routing/arguments trên nhánh cá nhân.
+- Xây dựng cite và unit test, bộ eval nhóm 10 case.
+- Triển khai UI, thu transcript research/thiếu thông tin/xác nhận gửi và tổng hợp báo cáo của nhánh.
 
-- Rà soát prompt/tools v0–v3, snapshot/hash và version log.
-- Phân tích các case FAIL và đối chiếu metric trước/sau.
-- Kiểm tra eval nhóm đủ 5 single và 5 multi, liên kết run đúng artifact.
-
-Đầu ra: Bảng metric, phân tích lỗi và eval nhóm. Người kiểm tra chéo: Sơn. Đây là trách nhiệm được giao, không phải xác nhận các đầu việc đã hoàn tất.
+Người kiểm tra chéo: Sơn. Phạm vi theo báo cáo cá nhân; kết quả và minh chứng giữ đúng nhánh nguồn. Phần chạy model local của nhóm do Phạm Quang Tuấn thực hiện trên main.
 
 ## 3. Đóng góp cụ thể
 
-> Báo cáo nguồn từ nhánh thành viên: nội dung lịch sử dưới đây được giữ để đối chiếu, không xác nhận rằng mã/run của nhánh đó đã được tích hợp vào main. Phân công hiện hành nằm ở mục 2; số đo bản nộp theo group report.
 
 
 - Baseline v0: case_accuracy 0.65 → tối ưu lên v3 0.95 (provider_error=0)
@@ -27,8 +24,13 @@ Phân công cập nhật theo TEAM.md cho bản main hiện tại:
 
 ## 4. Bằng chứng
 
-- File/commit/PR: `starter_v0/artifacts/*`, `tools/cite/`, `data/eval_group.json`, `app.py`, `runs/`, `transcripts/`, `report/team/group_report.md`
+**Nguồn minh chứng cá nhân:** [nhánh lab/day03-e1110](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/), [báo cáo gốc](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/lab%2Fday03-e1110/report/team/2A202603866_HuynhVanCuong.md). Các URL bên dưới trỏ tới nhánh cá nhân; số liệu ở đó không thay thế kết quả main trong báo cáo nhóm.
+
+- File/commit/PR: `starter_v0/artifacts/*`, [tools/cite/](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/tools/cite), [data/eval_group.json](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/lab%2Fday03-e1110/starter_v0/data/eval_group.json), `app.py`, `runs/`, `transcripts/`, [report/team/group_report.md](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/blob/lab%2Fday03-e1110/report/team/group_report.md)
 - AI/công cụ: Cursor agent hỗ trợ viết/sửa; tự kiểm bằng `preflight_provider.py`, `run_eval.py`, `pytest`
+
+
+Minh chứng theo nhánh: [artifacts](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/artifacts), [tools](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/tools), [tests](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/tests), [data](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/data), [runs](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/runs), [transcripts](https://github.com/phamtuan2xx3-alt/K5-L3B-DAY03-E1110-ResearchAgentToolEval/tree/lab%2Fday03-e1110/starter_v0/transcripts).
 
 ## 5. Tự đánh giá
 

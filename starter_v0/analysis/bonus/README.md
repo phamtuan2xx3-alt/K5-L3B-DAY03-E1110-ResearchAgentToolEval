@@ -71,3 +71,11 @@ python run_eval.py --provider gemini --model gemini-3.5-flash-lite --version v5-
 Giữ OLLAMA_MAX_OUTPUT_TOKENS=512, server/context và cùng bộ base khi so sánh.
 Không bấm gửi Telegram lần nữa chỉ để tái lập screenshot; muốn gửi thêm cần
 xác nhận nội dung/kênh cho lần gửi mới. Các lệnh eval trên không gửi Telegram.
+
+## Bốn tool tích hợp từ nhánh Đỗ Minh Thanh
+
+- [Commit nguồn và manifest tích hợp](../four_tools_integration.json).
+- [46 test cho bốn tool](../../tests/test_thanh_research_tools.py); 10 test source_audit vẫn nằm trong test_tools_todo.py.
+- [4 case routing bổ sung](../../data/eval_four_tools.json), [run Gemini 4/4 không lỗi provider](../../runs/main-four-tools_B_group_gemini_20261111T104511986590.json).
+- Mỗi tool có TOOL.md, implementation, registry và declaration. Đây là minh chứng để đối chiếu bonus hơn ba tool mới; không tự cộng điểm.
+- Bộ tool hiện tại có 15 tool. Chưa chạy lại base/group 10 case hoặc local với snapshot mới; số đo cũ vẫn thuộc snapshot cũ.

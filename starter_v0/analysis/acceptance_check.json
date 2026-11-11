@@ -67,7 +67,20 @@
       "after_passed": 6,
       "evidence": "analysis/bonus/send_regression_summary.json"
     },
-    "four_new_tools_bonus": "not claimed"
+    "four_new_tools_bonus": {
+      "status": "evidence_ready_for_review",
+      "tools": [
+        "deduplicate_sources",
+        "check_citations",
+        "compare_papers",
+        "rank_sources"
+      ],
+      "unit_tests": 46,
+      "routing_cases": 4,
+      "routing_passed": 4,
+      "evidence": "analysis/four_tools_integration.json",
+      "note": "Imported from member branch DoMinhThanh; no self-assigned score."
+    }
   },
   "tests": {
     "passed": 103,
@@ -88,5 +101,12 @@
     "live_items_count": 2,
     "evidence": "analysis/social_search_after_subscription.json",
     "note": "Live social_search returned two posts after user subscribed; historical 403 evidence preserved."
+  },
+  "active_integration": {
+    "snapshot": "main-four-tools",
+    "total_tools": 15,
+    "source_branch": "DoMinhThanh",
+    "routing_run": "runs/main-four-tools_B_group_gemini_20261111T104511986590.json",
+    "historical_metrics_note": "CP2/CP4/local metrics remain bound to their original snapshots."
   }
 }

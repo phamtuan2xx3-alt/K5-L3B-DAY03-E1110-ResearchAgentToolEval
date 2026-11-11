@@ -1,0 +1,75 @@
+{
+  "dataset_id": "e1110_four_tools_integration",
+  "dataset_role": "group",
+  "description": "Supplemental integration checks, not the required ten-case group suite.",
+  "cases": [
+    {
+      "id": "I01",
+      "phase": "B",
+      "failure_type": "wrong_tool",
+      "query": "Remove duplicate source URLs, keeping the first item: [{\"title\":\"A\",\"url\":\"https://example.org/a?utm_source=x\"},{\"title\":\"B\",\"url\":\"https://example.org/a\"}]. Do not browse.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate_sources",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes to deduplicate_sources."
+      }
+    },
+    {
+      "id": "I02",
+      "phase": "B",
+      "failure_type": "wrong_tool",
+      "query": "Validate citation IDs in draft \"Result [S1] and [S2].\" against sources [{\"id\":\"S1\",\"url\":\"https://example.org/a\"}]. Do not browse.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_citations",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes to check_citations."
+      }
+    },
+    {
+      "id": "I03",
+      "phase": "B",
+      "failure_type": "wrong_tool",
+      "query": "Compare these supplied papers by year and method in a Markdown table: [{\"title\":\"A\",\"year\":2024,\"method\":\"transformer\"},{\"title\":\"B\",\"year\":2025,\"method\":\"retrieval\"}]. Do not browse.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "compare_papers",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes to compare_papers."
+      }
+    },
+    {
+      "id": "I04",
+      "phase": "B",
+      "failure_type": "wrong_tool",
+      "query": "Rank supplied sources for query \"retrieval\", reference_date \"2026-11-10\", preferred_domains [\"example.org\"], limit 2: [{\"title\":\"retrieval\",\"url\":\"https://example.org/a\",\"published_at\":\"2026-11-09\"},{\"title\":\"other\",\"url\":\"https://example.net/b\",\"published_at\":\"2025-01-01\"}]. Do not browse.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "rank_sources",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes to rank_sources."
+      }
+    }
+  ]
+}

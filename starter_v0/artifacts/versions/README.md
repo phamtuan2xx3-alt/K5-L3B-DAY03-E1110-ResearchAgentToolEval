@@ -36,3 +36,7 @@ chỉ dùng run v0 một model được chỉ rõ trong báo cáo để so với
   `--provider ollama --model qwen2.5:3b` trong lệnh tái lập tương ứng; dùng Gemini
   để kiểm tra ngược cùng v5-local. Không thay bản cloud/live đang dùng bằng các
   bản rút gọn vì kết quả đo giảm điểm. [Minh chứng](../../analysis/bonus/README.md).
+
+## Tích hợp bốn tool sau CP3
+
+main-four-tools/ giữ prompt và declaration sau khi tích hợp deduplicate_sources, check_citations, compare_papers, rank_sources từ DoMinhThanh cùng source_audit có sẵn. Dùng hai file trong thư mục này với --system-prompt và --tools để tái lập supplemental run main-four-tools. Bộ eval_four_tools.json có 4 single-turn case bổ sung, không thay bộ group 10 case. Không gán metric base/local cũ cho snapshot mới.
